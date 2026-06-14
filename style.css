@@ -123,6 +123,34 @@ body[data-theme='dark'] .toast {
 	color: #0f172a;
 }
 
+body[data-theme='dark'] .modal-overlay {
+	background: rgba(2, 6, 23, 0.72);
+}
+
+body[data-theme='dark'] .app-modal {
+	background: #111827;
+	border-color: var(--line);
+}
+
+body[data-theme='dark'] .modal-icon {
+	background: #0f172a;
+}
+
+body[data-theme='dark'] .modal-eyebrow {
+	background: rgba(129, 140, 248, 0.16);
+	color: #c7d2fe;
+}
+
+body[data-theme='dark'] .modal-overlay[data-variant='danger'] .modal-eyebrow {
+	background: rgba(185, 28, 28, 0.22);
+	color: #fecaca;
+}
+
+body[data-theme='dark'] .modal-overlay[data-variant='warning'] .modal-eyebrow {
+	background: rgba(180, 83, 9, 0.22);
+	color: #fed7aa;
+}
+
 button,
 input,
 textarea,
@@ -637,6 +665,130 @@ button:hover {
 	border-color: rgba(185, 28, 28, 0.28);
 }
 
+.modal-open {
+	overflow: hidden;
+}
+
+.modal-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 50;
+	display: grid;
+	place-items: center;
+	padding: 20px;
+	background: rgba(15, 23, 42, 0.58);
+	backdrop-filter: blur(10px);
+}
+
+.modal-overlay.hidden {
+	display: none;
+}
+
+.app-modal {
+	width: min(100%, 520px);
+	display: flex;
+	gap: 16px;
+	padding: 20px;
+	border: 1px solid var(--line);
+	border-radius: 24px;
+	background: var(--surface);
+	box-shadow: var(--shadow);
+	animation: modalEnter 0.18s ease-out;
+}
+
+.modal-icon {
+	width: 48px;
+	height: 48px;
+	flex: 0 0 48px;
+	display: grid;
+	place-items: center;
+	border-radius: 18px;
+	background: var(--surface-soft);
+	border: 1px solid var(--line);
+	font-size: 1.35rem;
+}
+
+.modal-content {
+	flex: 1;
+	display: grid;
+	gap: 10px;
+}
+
+.modal-eyebrow {
+	width: fit-content;
+	padding: 5px 9px;
+	border-radius: 999px;
+	background: rgba(79, 70, 229, 0.1);
+	color: var(--primary-dark);
+	font-size: 0.72rem;
+	font-weight: 900;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+}
+
+.app-modal h2 {
+	margin: 0;
+	font-size: 1.35rem;
+	color: var(--text);
+}
+
+.app-modal p {
+	margin: 0;
+	color: var(--muted);
+	line-height: 1.55;
+}
+
+.modal-input-group {
+	display: grid;
+	gap: 8px;
+	margin-top: 4px;
+}
+
+.modal-input-group span {
+	color: var(--muted);
+	font-size: 0.82rem;
+	font-weight: 800;
+}
+
+.modal-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 8px;
+}
+
+.modal-overlay[data-variant='danger'] .modal-icon {
+	background: rgba(185, 28, 28, 0.12);
+	border-color: rgba(185, 28, 28, 0.28);
+}
+
+.modal-overlay[data-variant='danger'] .modal-eyebrow {
+	background: rgba(185, 28, 28, 0.12);
+	color: #b91c1c;
+}
+
+.modal-overlay[data-variant='warning'] .modal-icon {
+	background: rgba(180, 83, 9, 0.12);
+	border-color: rgba(180, 83, 9, 0.28);
+}
+
+.modal-overlay[data-variant='warning'] .modal-eyebrow {
+	background: rgba(180, 83, 9, 0.12);
+	color: #b45309;
+}
+
+@keyframes modalEnter {
+	from {
+		opacity: 0;
+		transform: translateY(10px) scale(0.98);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
 .toast {
 	position: fixed;
 	right: 20px;
@@ -698,6 +850,19 @@ button:hover {
 
 	.option-control,
 	.option-danger button {
+		width: 100%;
+	}
+
+	.app-modal {
+		flex-direction: column;
+		padding: 18px;
+	}
+
+	.modal-actions {
+		flex-direction: column-reverse;
+	}
+
+	.modal-actions button {
 		width: 100%;
 	}
 }

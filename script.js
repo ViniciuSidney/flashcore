@@ -53,6 +53,16 @@ const elements = {
 	themeSelect: document.querySelector('#themeSelect'),
 	clearAllDataBtn: document.querySelector('#clearAllDataBtn'),
 	dataSummary: document.querySelector('#dataSummary'),
+	appModal: document.querySelector('#appModal'),
+	modalIcon: document.querySelector('#modalIcon'),
+	modalEyebrow: document.querySelector('#modalEyebrow'),
+	modalTitle: document.querySelector('#modalTitle'),
+	modalMessage: document.querySelector('#modalMessage'),
+	modalInputGroup: document.querySelector('#modalInputGroup'),
+	modalInputLabel: document.querySelector('#modalInputLabel'),
+	modalInput: document.querySelector('#modalInput'),
+	modalCancelBtn: document.querySelector('#modalCancelBtn'),
+	modalConfirmBtn: document.querySelector('#modalConfirmBtn'),
 	toast: document.querySelector('#toast')
 };
 
@@ -269,14 +279,35 @@ function changeTheme(theme) {
 	showToast(`Tema ${themeLabel} ativado.`);
 }
 
-function clearAllData() {
-	const firstConfirmation = confirm('Tem certeza que deseja excluir todos os dados? Isso apagará baralhos, flashcards, progresso de revisão e preferências.');
+async function clearAllData() {
+	const firstConfirmation = await appConfirm({
+		eyebrow: 'Ação crítica',
+		title: 'Excluir todos os dados?',
+		message: 'Isso apagará baralhos, flashcards, progresso de revisão e preferências salvas no navegador.',
+		variant: 'danger',
+		icon: '🗑️',
+		confirmText: 'Continuar',
+		cancelText: 'Cancelar'
+	});
 
 	if (!firstConfirmation) return;
 
-	const secondConfirmation = prompt('Para confirmar definitivamente, digite EXCLUIR em letras maiúsculas:');
+	const secondConfirmation = await appPrompt({
+		eyebrow: 'Confirmação final',
+		title: 'Digite EXCLUIR para confirmar',
+		message: 'Essa etapa evita exclusões acidentais. Para apagar tudo definitivamente, digite EXCLUIR em letras maiúsculas.',
+		variant: 'danger',
+		icon: '⚠️',
+		confirmText: 'Excluir definitivamente',
+		cancelText: 'Cancelar',
+		input: {
+			label: 'Palavra de confirmação',
+			placeholder: 'EXCLUIR',
+			maxLength: 16
+		}
+	});
 
-	if (secondConfirmation !== 'EXCLUIR') {
+	if (secondConfirmation?.trim() !== 'EXCLUIR') {
 		showToast('Exclusão cancelada. A palavra de confirmação não foi digitada corretamente.');
 		return;
 	}
@@ -356,7 +387,7 @@ function saveCard(event) {
 	render();
 }
 
-function handleCardAction(action, cardId) {
+async function handleCardAction(action, cardId) {
 	const card = state.cards.find((item) => item.id === cardId);
 	if (!card) return;
 
@@ -374,8 +405,22 @@ function handleCardAction(action, cardId) {
 	}
 
 	if (action === 'move') {
-		const targetName = prompt('Mover para qual baralho? Digite o nome exato do baralho:');
-		if (!targetName) return;
+		const targetName = await appPrompt({
+			eyebrow: 'Organização',
+			title: 'Mover flashcard',
+			message: 'Digite o nome exato do baralho para onde este card deve ser movido.',
+			variant: 'default',
+			icon: '📦',
+			confirmText: 'Mover card',
+			cancelText: 'Cancelar',
+			input: {
+				label: 'Nome do baralho',
+				placeholder: 'Ex.: Matemática',
+				maxLength: 36
+			}
+		});
+
+		if (!targetName?.trim()) return;
 
 		const targetDeck = state.decks.find((deck) => deck.name.toLowerCase() === targetName.trim().toLowerCase());
 		if (!targetDeck) return showToast('Baralho não encontrado.');
@@ -388,7 +433,16 @@ function handleCardAction(action, cardId) {
 	}
 
 	if (action === 'delete') {
-		const confirmed = confirm('Excluir este flashcard? Essa ação não pode ser desfeita.');
+		const confirmed = await appConfirm({
+			eyebrow: 'Excluir flashcard',
+			title: 'Excluir este flashcard?',
+			message: 'Essa ação não pode ser desfeita. O card será removido da sua biblioteca e das revisões.',
+			variant: 'danger',
+			icon: '🗑️',
+			confirmText: 'Excluir',
+			cancelText: 'Cancelar'
+		});
+
 		if (!confirmed) return;
 
 		state.cards = state.cards.filter((item) => item.id !== cardId);
@@ -397,15 +451,37 @@ function handleCardAction(action, cardId) {
 	}
 }
 
-function handleDeckAction(action, deckId) {
+async function handleDeckAction(action, deckId) {
 	const deck = state.decks.find((item) => item.id === deckId);
 	if (!deck) return;
 
 	if (action === 'renameDeck') {
-		const newName = prompt('Novo nome do baralho:', deck.name)?.trim();
-		if (!newName) return;
+		const newName = await appPrompt({
+			eyebrow: 'Editar baralho',
+			title: 'Renomear baralho',
+			message: 'Escolha um novo nome para este baralho.',
+			variant: 'default',
+			icon: '✏️',
+			confirmText: 'Salvar nome',
+			cancelText: 'Cancelar',
+			input: {
+				label: 'Nome do baralho',
+				value: deck.name,
+				placeholder: 'Ex.: Matemática',
+				maxLength: 36
+			}
+		});
 
-		deck.name = newName;
+		if (!newName?.trim()) return;
+
+		const alreadyExists = state.decks.some((item) => item.id !== deckId && item.name.toLowerCase() === newName.trim().toLowerCase());
+
+		if (alreadyExists) {
+			showToast('Já existe um baralho com esse nome.');
+			return;
+		}
+
+		deck.name = newName.trim();
 		render();
 		showToast('Baralho renomeado.');
 		return;
@@ -413,9 +489,18 @@ function handleDeckAction(action, deckId) {
 
 	if (action === 'deleteDeck') {
 		const cardsInside = state.cards.filter((card) => card.deckId === deckId).length;
-		const message = cardsInside > 0 ? `Esse baralho possui ${cardsInside} card(s). Excluir também os cards?` : 'Excluir este baralho?';
+		const message = cardsInside > 0 ? `Esse baralho possui ${cardsInside} card(s). Ao excluir o baralho, esses cards também serão removidos.` : 'Este baralho será removido da sua organização.';
 
-		const confirmed = confirm(message);
+		const confirmed = await appConfirm({
+			eyebrow: 'Excluir baralho',
+			title: `Excluir "${deck.name}"?`,
+			message,
+			variant: 'danger',
+			icon: '🗑️',
+			confirmText: 'Excluir baralho',
+			cancelText: 'Cancelar'
+		});
+
 		if (!confirmed) return;
 
 		state.decks = state.decks.filter((item) => item.id !== deckId);
@@ -505,9 +590,18 @@ function gradeCurrentCard(grade) {
 	nextReviewCard();
 }
 
-function seedExample() {
+async function seedExample() {
 	if (state.cards.length > 0) {
-		const confirmed = confirm('Você já possui cards. Adicionar exemplos mesmo assim?');
+		const confirmed = await appConfirm({
+			eyebrow: 'Criar exemplos',
+			title: 'Adicionar cards de exemplo?',
+			message: 'Você já possui cards salvos. Os exemplos serão adicionados junto aos cards atuais, sem apagar nada.',
+			variant: 'warning',
+			icon: '✨',
+			confirmText: 'Adicionar exemplos',
+			cancelText: 'Cancelar'
+		});
+
 		if (!confirmed) return;
 	}
 
@@ -566,6 +660,87 @@ function showToast(message) {
 	showToast.timeout = setTimeout(() => elements.toast.classList.add('hidden'), 2600);
 }
 
+let modalResolver = null;
+
+function openAppModal({eyebrow = 'Confirmação', title = 'Confirmar ação', message = '', variant = 'default', icon = '⚡', confirmText = 'Confirmar', cancelText = 'Cancelar', input = null}) {
+	return new Promise((resolve) => {
+		modalResolver = resolve;
+
+		elements.appModal.dataset.variant = variant;
+		elements.appModal.dataset.mode = input ? 'prompt' : 'confirm';
+
+		elements.modalIcon.textContent = icon;
+		elements.modalEyebrow.textContent = eyebrow;
+		elements.modalTitle.textContent = title;
+		elements.modalMessage.textContent = message;
+		elements.modalConfirmBtn.textContent = confirmText;
+		elements.modalCancelBtn.textContent = cancelText;
+
+		elements.modalConfirmBtn.className = variant === 'danger' ? 'danger-btn' : variant === 'warning' ? 'warning-btn' : 'primary-btn';
+
+		if (input) {
+			elements.modalInputGroup.classList.remove('hidden');
+			elements.modalInputLabel.textContent = input.label ?? 'Digite uma resposta';
+			elements.modalInput.value = input.value ?? '';
+			elements.modalInput.placeholder = input.placeholder ?? '';
+			elements.modalInput.maxLength = input.maxLength ?? 80;
+		} else {
+			elements.modalInputGroup.classList.add('hidden');
+			elements.modalInput.value = '';
+			elements.modalInput.placeholder = '';
+		}
+
+		elements.appModal.classList.remove('hidden');
+		document.body.classList.add('modal-open');
+
+		setTimeout(() => {
+			if (input) {
+				elements.modalInput.focus();
+				elements.modalInput.select();
+			} else {
+				elements.modalConfirmBtn.focus();
+			}
+		}, 0);
+	});
+}
+
+function closeAppModal(result) {
+	elements.appModal.classList.add('hidden');
+	document.body.classList.remove('modal-open');
+
+	if (modalResolver) {
+		modalResolver(result);
+		modalResolver = null;
+	}
+}
+
+function confirmAppModal() {
+	const mode = elements.appModal.dataset.mode;
+
+	if (mode === 'prompt') {
+		closeAppModal(elements.modalInput.value);
+		return;
+	}
+
+	closeAppModal(true);
+}
+
+function cancelAppModal() {
+	const mode = elements.appModal.dataset.mode;
+	closeAppModal(mode === 'prompt' ? null : false);
+}
+
+function appConfirm(options) {
+	return openAppModal(options);
+}
+
+function appPrompt(options) {
+	return openAppModal({
+		...options,
+		input: options.input ?? {}
+	});
+}
+
 function normalizeTags(value) {
 	return value
 		.split(',')
@@ -611,6 +786,27 @@ elements.themeSelect.addEventListener('change', () => {
 });
 
 elements.clearAllDataBtn.addEventListener('click', clearAllData);
+elements.modalConfirmBtn.addEventListener('click', confirmAppModal);
+elements.modalCancelBtn.addEventListener('click', cancelAppModal);
+
+elements.appModal.addEventListener('click', (event) => {
+	if (event.target === elements.appModal) {
+		cancelAppModal();
+	}
+});
+
+document.addEventListener('keydown', (event) => {
+	if (elements.appModal.classList.contains('hidden')) return;
+
+	if (event.key === 'Escape') {
+		cancelAppModal();
+	}
+
+	if (event.key === 'Enter') {
+		event.preventDefault();
+		confirmAppModal();
+	}
+});
 
 elements.gradeActions.querySelectorAll('button').forEach((button) => {
 	button.addEventListener('click', () => gradeCurrentCard(button.dataset.grade));
