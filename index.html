@@ -1,198 +1,234 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FlashCore v1</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div class="app-shell">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="brand__icon">⚡</div>
-        <div>
-          <h1>FlashCore</h1>
-          <p>Revisões por flashcards</p>
-        </div>
-      </div>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>FlashCore v1</title>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<div class="app-shell">
+			<aside class="sidebar">
+				<div class="brand">
+					<div class="brand__icon">⚡</div>
+					<div>
+						<h1>FlashCore</h1>
+						<p>Revisões por flashcards</p>
+					</div>
+				</div>
 
-      <section class="panel compact-panel">
-        <h2>📚 Baralhos</h2>
-        <form id="deckForm" class="inline-form">
-          <input id="deckNameInput" type="text" placeholder="Novo baralho" maxlength="36" />
-          <button type="submit" title="Criar baralho">+</button>
-        </form>
-        <div id="deckList" class="deck-list"></div>
-      </section>
+				<section class="panel compact-panel">
+					<h2>📚 Baralhos</h2>
+					<form id="deckForm" class="inline-form">
+						<input id="deckNameInput" type="text" placeholder="Novo baralho" maxlength="36" />
+						<button type="submit" title="Criar baralho">+</button>
+					</form>
+					<div id="deckList" class="deck-list"></div>
+				</section>
 
-      <section class="panel compact-panel">
-        <h2>📊 Resumo</h2>
-        <div class="stats-grid">
-          <article>
-            <strong id="totalCardsStat">0</strong>
-            <span>cards</span>
-          </article>
-          <article>
-            <strong id="dueCardsStat">0</strong>
-            <span>para revisar</span>
-          </article>
-          <article>
-            <strong id="deckCardsStat">0</strong>
-            <span>no baralho</span>
-          </article>
-        </div>
-      </section>
-    </aside>
+				<section class="panel compact-panel">
+					<h2>📊 Resumo</h2>
+					<div class="stats-grid">
+						<article>
+							<strong id="totalCardsStat">0</strong>
+							<span>cards</span>
+						</article>
+						<article>
+							<strong id="dueCardsStat">0</strong>
+							<span>para revisar</span>
+						</article>
+						<article>
+							<strong id="deckCardsStat">0</strong>
+							<span>no baralho</span>
+						</article>
+					</div>
+				</section>
+			</aside>
 
-    <main class="main-content">
-      <header class="hero">
-        <div>
-          <span class="eyebrow">v1 • localStorage • HTML/CSS/JS</span>
-          <h2>Central de revisão livre</h2>
-          <p>
-            Crie, organize, edite, mova e revise seus conteúdos em flashcards simples,
-            com uma base pronta para evoluir para um sistema mais completo.
-          </p>
-        </div>
-        <div class="hero-actions">
-          <button id="startReviewBtn" class="primary-btn">▶️ Revisar agora</button>
-          <button id="seedBtn" class="ghost-btn">✨ Criar exemplo</button>
-        </div>
-      </header>
+			<main class="main-content">
+				<header class="hero">
+					<div>
+						<span class="eyebrow">v1.1 • localStorage • HTML/CSS/JS</span>
+						<h2>Central de revisão livre</h2>
+						<p>Crie, organize, edite, mova e revise seus conteúdos em flashcards simples, com uma base pronta para evoluir para um sistema mais completo.</p>
+					</div>
+					<div class="hero-actions">
+						<button id="startReviewBtn" class="primary-btn">▶️ Revisar agora</button>
+						<button id="seedBtn" class="ghost-btn">✨ Criar exemplo</button>
+					</div>
+				</header>
 
-      <nav class="tabs" aria-label="Seções principais">
-        <button class="tab active" data-view="cardsView">🗂️ Cards</button>
-        <button class="tab" data-view="reviewView">🧠 Revisão</button>
-        <button class="tab" data-view="organizeView">🧩 Organização</button>
-      </nav>
+				<nav class="tabs" aria-label="Seções principais">
+					<button class="tab active" data-view="cardsView">🗂️ Cards</button>
+					<button class="tab" data-view="reviewView">🧠 Revisão</button>
+					<button class="tab" data-view="organizeView">🧩 Organização</button>
+					<button class="tab" data-view="optionsView">⚙️ Opções</button>
+				</nav>
 
-      <section id="cardsView" class="view active-view">
-        <div class="section-grid">
-          <section class="panel form-panel">
-            <div class="panel-header">
-              <div>
-                <h2 id="cardFormTitle">➕ Novo flashcard</h2>
-                <p>Use frente e verso como pergunta e resposta.</p>
-              </div>
-              <button id="cancelEditBtn" class="small-btn hidden">Cancelar edição</button>
-            </div>
+				<section id="cardsView" class="view active-view">
+					<div class="section-grid">
+						<section class="panel form-panel">
+							<div class="panel-header">
+								<div>
+									<h2 id="cardFormTitle">➕ Novo flashcard</h2>
+									<p>Use frente e verso como pergunta e resposta.</p>
+								</div>
+								<button id="cancelEditBtn" class="small-btn hidden">Cancelar edição</button>
+							</div>
 
-            <form id="cardForm" class="card-form">
-              <label>
-                Frente do card
-                <textarea id="frontInput" placeholder="Ex.: O que é probabilidade condicional?" required></textarea>
-              </label>
+							<form id="cardForm" class="card-form">
+								<label>
+									Frente do card
+									<textarea id="frontInput" placeholder="Ex.: O que é probabilidade condicional?" required></textarea>
+								</label>
 
-              <label>
-                Verso do card
-                <textarea id="backInput" placeholder="Ex.: É a probabilidade de A acontecer sabendo que B já aconteceu." required></textarea>
-              </label>
+								<label>
+									Verso do card
+									<textarea id="backInput" placeholder="Ex.: É a probabilidade de A acontecer sabendo que B já aconteceu." required></textarea>
+								</label>
 
-              <div class="form-row">
-                <label>
-                  Baralho
-                  <select id="deckSelect"></select>
-                </label>
-                <label>
-                  Dificuldade inicial
-                  <select id="difficultyInput">
-                    <option value="new">Novo</option>
-                    <option value="easy">Fácil</option>
-                    <option value="medium">Médio</option>
-                    <option value="hard">Difícil</option>
-                  </select>
-                </label>
-              </div>
+								<div class="form-row">
+									<label>
+										Baralho
+										<select id="deckSelect"></select>
+									</label>
+									<label>
+										Dificuldade inicial
+										<select id="difficultyInput">
+											<option value="new">Novo</option>
+											<option value="easy">Fácil</option>
+											<option value="medium">Médio</option>
+											<option value="hard">Difícil</option>
+										</select>
+									</label>
+								</div>
 
-              <label>
-                Tags
-                <input id="tagsInput" type="text" placeholder="matemática, probabilidade, enem" />
-              </label>
+								<label>
+									Tags
+									<input id="tagsInput" type="text" placeholder="matemática, probabilidade, enem" />
+								</label>
 
-              <button class="primary-btn" type="submit">Salvar flashcard</button>
-            </form>
-          </section>
+								<button class="primary-btn" type="submit">Salvar flashcard</button>
+							</form>
+						</section>
 
-          <section class="panel list-panel">
-            <div class="panel-header">
-              <div>
-                <h2>🗃️ Biblioteca</h2>
-                <p id="currentDeckLabel">Todos os cards</p>
-              </div>
-            </div>
+						<section class="panel list-panel">
+							<div class="panel-header">
+								<div>
+									<h2>🗃️ Biblioteca</h2>
+									<p id="currentDeckLabel">Todos os cards</p>
+								</div>
+							</div>
 
-            <div class="filters">
-              <input id="searchInput" type="search" placeholder="Buscar por frente, verso ou tag..." />
-              <select id="statusFilter">
-                <option value="all">Todos</option>
-                <option value="due">Para revisar</option>
-                <option value="new">Novos</option>
-                <option value="hard">Difíceis</option>
-              </select>
-            </div>
+							<div class="filters">
+								<input id="searchInput" type="search" placeholder="Buscar por frente, verso ou tag..." />
+								<select id="statusFilter">
+									<option value="all">Todos</option>
+									<option value="due">Para revisar</option>
+									<option value="new">Novos</option>
+									<option value="hard">Difíceis</option>
+								</select>
+							</div>
 
-            <div id="cardsList" class="cards-list"></div>
-          </section>
-        </div>
-      </section>
+							<div id="cardsList" class="cards-list"></div>
+						</section>
+					</div>
+				</section>
 
-      <section id="reviewView" class="view">
-        <section class="panel review-panel">
-          <div class="panel-header">
-            <div>
-              <h2>🧠 Sessão de revisão</h2>
-              <p id="reviewSubtitle">Escolha um baralho e comece quando quiser.</p>
-            </div>
-          </div>
+				<section id="reviewView" class="view">
+					<section class="panel review-panel">
+						<div class="panel-header">
+							<div>
+								<h2>🧠 Sessão de revisão</h2>
+								<p id="reviewSubtitle">Escolha um baralho e comece quando quiser.</p>
+							</div>
+						</div>
 
-          <div id="reviewEmpty" class="empty-state">
-            <strong>Nenhum card pronto para revisão.</strong>
-            <span>Crie novos flashcards ou selecione outro baralho.</span>
-          </div>
+						<div id="reviewEmpty" class="empty-state">
+							<strong>Nenhum card pronto para revisão.</strong>
+							<span>Crie novos flashcards ou selecione outro baralho.</span>
+						</div>
 
-          <article id="reviewCard" class="review-card hidden">
-            <span id="reviewDeckBadge" class="badge">Baralho</span>
-            <div class="review-question">
-              <span>Frente</span>
-              <h3 id="reviewFront"></h3>
-            </div>
+						<article id="reviewCard" class="review-card hidden">
+							<span id="reviewDeckBadge" class="badge">Baralho</span>
+							<div class="review-question">
+								<span>Frente</span>
+								<h3 id="reviewFront"></h3>
+							</div>
 
-            <div id="reviewAnswer" class="review-answer hidden">
-              <span>Verso</span>
-              <p id="reviewBack"></p>
-            </div>
+							<div id="reviewAnswer" class="review-answer hidden">
+								<span>Verso</span>
+								<p id="reviewBack"></p>
+							</div>
 
-            <div class="review-actions">
-              <button id="revealAnswerBtn" class="primary-btn">Mostrar resposta</button>
-              <div id="gradeActions" class="grade-actions hidden">
-                <button data-grade="again" class="danger-btn">Errei</button>
-                <button data-grade="hard" class="warning-btn">Difícil</button>
-                <button data-grade="good" class="success-btn">Bom</button>
-                <button data-grade="easy" class="ghost-btn">Fácil</button>
-              </div>
-            </div>
-          </article>
-        </section>
-      </section>
+							<div class="review-actions">
+								<button id="revealAnswerBtn" class="primary-btn">Mostrar resposta</button>
+								<div id="gradeActions" class="grade-actions hidden">
+									<button data-grade="again" class="danger-btn">Errei</button>
+									<button data-grade="hard" class="warning-btn">Difícil</button>
+									<button data-grade="good" class="success-btn">Bom</button>
+									<button data-grade="easy" class="ghost-btn">Fácil</button>
+								</div>
+							</div>
+						</article>
+					</section>
+				</section>
 
-      <section id="organizeView" class="view">
-        <section class="panel">
-          <div class="panel-header">
-            <div>
-              <h2>🧩 Organização</h2>
-              <p>Gerencie baralhos e mantenha sua revisão limpa.</p>
-            </div>
-          </div>
+				<section id="organizeView" class="view">
+					<section class="panel">
+						<div class="panel-header">
+							<div>
+								<h2>🧩 Organização</h2>
+								<p>Gerencie baralhos e mantenha sua revisão limpa.</p>
+							</div>
+						</div>
 
-          <div id="deckManager" class="manager-list"></div>
-        </section>
-      </section>
-    </main>
-  </div>
+						<div id="deckManager" class="manager-list"></div>
+					</section>
+				</section>
 
-  <div id="toast" class="toast hidden"></div>
+				<section id="optionsView" class="view">
+					<section class="panel">
+						<div class="panel-header">
+							<div>
+								<h2>⚙️ Opções</h2>
+								<p>Personalize a aplicação e gerencie os dados salvos no navegador.</p>
+							</div>
+						</div>
 
-  <script src="script.js"></script>
-</body>
+						<div class="options-grid">
+							<article class="option-item">
+								<div>
+									<h3>🌓 Tema da interface</h3>
+									<p>Alterne entre o tema claro e o tema escuro.</p>
+								</div>
+
+								<div class="option-control">
+									<label for="themeSelect">Tema atual</label>
+									<select id="themeSelect">
+										<option value="light">Claro</option>
+										<option value="dark">Escuro</option>
+									</select>
+								</div>
+							</article>
+
+							<article class="option-item option-danger">
+								<div>
+									<h3>🗑️ Excluir todos os dados</h3>
+									<p>Remove baralhos, flashcards, progresso de revisão e preferências salvas. Essa ação exige confirmação dupla.</p>
+									<small id="dataSummary" class="card-meta">0 baralho(s) • 0 flashcard(s) salvos</small>
+								</div>
+
+								<button id="clearAllDataBtn" class="danger-btn" type="button">Excluir todos os dados</button>
+							</article>
+						</div>
+					</section>
+				</section>
+			</main>
+		</div>
+
+		<div id="toast" class="toast hidden"></div>
+
+		<script src="script.js"></script>
+	</body>
 </html>
