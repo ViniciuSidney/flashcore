@@ -1,0 +1,22 @@
+:root {
+	color-scheme: light dark;
+	--primary: var(--blue-600);
+	--primary-hover: var(--blue-700);
+	--primary-active: var(--blue-800);
+	--primary-soft: rgba(37, 99, 235, 0.13);
+	--primary-soft-strong: rgba(37, 99, 235, 0.2);
+}
+
+html,
+body {
+	background: var(--page-bg);
+}
+
+body {
+	transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+::selection {
+	background: var(--primary);
+	color: #fff;
+}

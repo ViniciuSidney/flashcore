@@ -1,0 +1,42 @@
+body {
+	font-family: var(--font-sans);
+	font-size: var(--font-size-md);
+	line-height: var(--line-normal);
+	color: var(--text-primary);
+}
+
+h1,
+h2,
+h3,
+h4 {
+	font-weight: var(--weight-bold);
+	line-height: var(--line-tight);
+	letter-spacing: -0.025em;
+}
+
+h1 { font-size: var(--font-size-2xl); }
+h2 { font-size: clamp(1.35rem, 3vw, 1.85rem); }
+h3 { font-size: var(--font-size-lg); }
+
+p,
+small,
+label,
+span {
+	text-wrap: pretty;
+}
+
+code,
+pre {
+	font-family: var(--font-mono);
+}
+
+.eyebrow {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	font-size: var(--font-size-xs);
+	font-weight: var(--weight-bold);
+	letter-spacing: 0.11em;
+	text-transform: uppercase;
+	color: var(--text-muted);
+}

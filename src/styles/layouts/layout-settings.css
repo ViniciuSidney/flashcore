@@ -1,0 +1,65 @@
+.settings-layout {
+	display: grid;
+	grid-template-columns: 250px minmax(0, 1fr);
+	gap: 1rem;
+}
+
+.settings-categories {
+	display: grid;
+	align-content: start;
+	gap: 0.4rem;
+	padding: 0.7rem;
+}
+
+.settings-category {
+	min-height: 44px;
+	display: flex;
+	align-items: center;
+	gap: 0.65rem;
+	padding: 0.65rem 0.75rem;
+	border-radius: var(--radius-sm);
+	background: transparent;
+	color: var(--text-secondary);
+	font-weight: var(--weight-semibold);
+	text-align: left;
+}
+
+.settings-category:hover,
+.settings-category.is-active {
+	background: var(--primary-soft);
+	color: var(--primary);
+}
+
+.settings-content {
+	min-height: 520px;
+}
+
+.settings-section {
+	display: grid;
+	gap: 1rem;
+}
+
+.settings-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 1rem;
+	border: 1px solid var(--border);
+	border-radius: var(--radius-md);
+	background: var(--surface-soft);
+}
+
+.settings-item__copy {
+	display: grid;
+	gap: 0.25rem;
+}
+
+.settings-item p,
+.settings-item small {
+	color: var(--text-muted);
+}
+
+.settings-danger {
+	border-color: color-mix(in srgb, var(--danger) 32%, var(--border));
+}

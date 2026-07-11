@@ -1,0 +1,127 @@
+.button,
+.icon-button,
+.action-link {
+	min-height: 44px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.55rem;
+	border: 1px solid transparent;
+	border-radius: var(--radius-sm);
+	font-weight: var(--weight-bold);
+	transition:
+		transform var(--transition-fast),
+		background-color var(--transition-fast),
+		border-color var(--transition-fast),
+		color var(--transition-fast),
+		box-shadow var(--transition-fast);
+}
+
+.button {
+	padding: 0.7rem 1rem;
+}
+
+.button:hover:not(:disabled),
+.icon-button:hover:not(:disabled),
+.action-link:hover {
+	transform: translateY(-1px);
+}
+
+.button:active:not(:disabled),
+.icon-button:active:not(:disabled) {
+	transform: translateY(0) scale(0.98);
+}
+
+.button:focus-visible,
+.icon-button:focus-visible,
+.action-link:focus-visible {
+	outline: 3px solid var(--focus-ring);
+	outline-offset: 2px;
+}
+
+.button:disabled,
+.icon-button:disabled {
+	cursor: not-allowed;
+	opacity: 0.5;
+}
+
+.button--primary {
+	background: var(--primary);
+	color: #fff;
+	box-shadow: 0 8px 22px var(--primary-soft-strong);
+}
+
+.button--primary:hover:not(:disabled) {
+	background: var(--primary-hover);
+}
+
+.button--secondary {
+	border-color: var(--border-strong);
+	background: var(--surface-elevated);
+	color: var(--text-primary);
+}
+
+.button--secondary:hover:not(:disabled) {
+	border-color: var(--primary);
+	color: var(--primary);
+}
+
+.button--ghost {
+	border-color: var(--border);
+	background: var(--surface-soft);
+	color: var(--text-secondary);
+}
+
+.button--ghost:hover:not(:disabled) {
+	background: var(--surface-muted);
+	color: var(--text-primary);
+}
+
+.button--danger {
+	border-color: color-mix(in srgb, var(--danger) 28%, transparent);
+	background: var(--danger-soft);
+	color: var(--danger);
+}
+
+.button--warning {
+	border-color: color-mix(in srgb, var(--warning) 28%, transparent);
+	background: var(--warning-soft);
+	color: var(--warning);
+}
+
+.button--success {
+	border-color: color-mix(in srgb, var(--success) 28%, transparent);
+	background: var(--success-soft);
+	color: var(--success);
+}
+
+.button--small {
+	min-height: 36px;
+	padding: 0.45rem 0.75rem;
+	font-size: var(--font-size-sm);
+}
+
+.button--block {
+	width: 100%;
+}
+
+.icon-button {
+	width: 44px;
+	padding: 0;
+	border-color: var(--border);
+	background: var(--surface-elevated);
+	color: var(--text-secondary);
+	font-size: 1.25rem;
+}
+
+.icon-button--quiet {
+	border-color: transparent;
+	background: transparent;
+}
+
+.button-row {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 0.65rem;
+}

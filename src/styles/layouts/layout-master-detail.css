@@ -1,0 +1,72 @@
+.deck-page-header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-bottom: 1rem;
+}
+
+.deck-page-header__identity {
+	display: flex;
+	align-items: center;
+	gap: 0.9rem;
+}
+
+.deck-page-header__identity .deck-icon {
+	width: 54px;
+	height: 54px;
+	flex-basis: 54px;
+	font-size: 1.45rem;
+}
+
+.deck-page-header p {
+	color: var(--text-muted);
+	margin-top: 0.35rem;
+}
+
+.master-detail {
+	display: grid;
+	grid-template-columns: minmax(320px, 0.9fr) minmax(380px, 1.3fr);
+	gap: 1rem;
+	min-height: 620px;
+}
+
+.master-pane,
+.detail-pane {
+	min-height: 0;
+}
+
+.master-pane {
+	display: flex;
+	flex-direction: column;
+}
+
+.master-toolbar {
+	display: grid;
+	grid-template-columns: 1fr 150px;
+	gap: 0.65rem;
+	padding: 1rem;
+	border-bottom: 1px solid var(--border);
+}
+
+.flashcard-list {
+	display: grid;
+	gap: 0.65rem;
+	padding: 0.8rem;
+	overflow: auto;
+}
+
+.detail-pane .panel-body {
+	display: grid;
+	gap: 1rem;
+}
+
+.detail-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.65rem;
+}
+
+.mobile-detail-back {
+	display: none;
+}

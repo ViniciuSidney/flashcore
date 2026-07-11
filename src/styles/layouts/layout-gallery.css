@@ -1,0 +1,17 @@
+.gallery-toolbar {
+	display: grid;
+	grid-template-columns: minmax(220px, 1fr) auto;
+	gap: 0.75rem;
+	margin-bottom: 1rem;
+}
+
+.gallery-toolbar__filters {
+	display: flex;
+	gap: 0.65rem;
+}
+
+.deck-gallery {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.9rem;
+}

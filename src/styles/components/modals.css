@@ -1,0 +1,92 @@
+.app-dialog {
+	width: min(94vw, 620px);
+	max-height: min(88vh, 820px);
+	padding: 0;
+	border: 0;
+	border-radius: var(--radius-xl);
+	background: transparent;
+	color: var(--text-primary);
+	overflow: visible;
+}
+
+.app-dialog::backdrop {
+	background: var(--overlay);
+	backdrop-filter: blur(8px);
+}
+
+.dialog-card {
+	max-height: min(88vh, 820px);
+	display: flex;
+	flex-direction: column;
+	border: 1px solid var(--border-strong);
+	border-radius: var(--radius-xl);
+	background: var(--surface-elevated);
+	box-shadow: var(--shadow-lg);
+	overflow: hidden;
+	animation: dialog-enter 180ms ease-out;
+}
+
+.dialog-header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 1.15rem 1.2rem;
+	border-bottom: 1px solid var(--border);
+}
+
+.dialog-heading {
+	display: flex;
+	align-items: center;
+	gap: 0.8rem;
+}
+
+.dialog-heading h2 {
+	margin-top: 0.1rem;
+	font-size: 1.35rem;
+}
+
+.dialog-icon {
+	width: 44px;
+	height: 44px;
+	display: grid;
+	place-items: center;
+	flex: 0 0 44px;
+	border-radius: 14px;
+	background: var(--primary-soft);
+	font-size: 1.2rem;
+}
+
+.app-dialog[data-variant='danger'] .dialog-icon {
+	background: var(--danger-soft);
+}
+
+.app-dialog[data-variant='warning'] .dialog-icon {
+	background: var(--warning-soft);
+}
+
+.dialog-body {
+	display: grid;
+	gap: 1rem;
+	padding: 1.2rem;
+	overflow: auto;
+}
+
+.dialog-message {
+	color: var(--text-secondary);
+}
+
+.dialog-actions {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 0.65rem;
+	padding: 1rem 1.2rem;
+	border-top: 1px solid var(--border);
+	background: var(--surface-soft);
+}
+
+@keyframes dialog-enter {
+	from { opacity: 0; transform: translateY(10px) scale(0.985); }
+	to { opacity: 1; transform: translateY(0) scale(1); }
+}

@@ -1,3 +1,16 @@
+# Sistema operacional
 .DS_Store
 Thumbs.db
-.vscode/
+
+# Editor
+.vscode/settings.json
+
+# Logs
+*.log
+
+# Dependências futuras
+node_modules/
+
+# Builds futuras
+dist/
+build/

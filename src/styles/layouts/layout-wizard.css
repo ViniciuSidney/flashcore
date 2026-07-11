@@ -1,0 +1,129 @@
+.wizard-layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1.8fr) minmax(260px, 0.7fr);
+	gap: 1rem;
+}
+
+.wizard-main {
+	min-height: 620px;
+	display: flex;
+	flex-direction: column;
+}
+
+.wizard-steps {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 0.5rem;
+	padding: 1rem;
+	border-bottom: 1px solid var(--border);
+}
+
+.wizard-step {
+	display: grid;
+	gap: 0.35rem;
+	color: var(--text-muted);
+	font-size: var(--font-size-xs);
+	font-weight: var(--weight-bold);
+}
+
+.wizard-step::before {
+	content: '';
+	height: 5px;
+	border-radius: var(--radius-pill);
+	background: var(--surface-strong);
+}
+
+.wizard-step.is-active,
+.wizard-step.is-complete {
+	color: var(--primary);
+}
+
+.wizard-step.is-active::before,
+.wizard-step.is-complete::before {
+	background: var(--primary);
+}
+
+.wizard-content {
+	flex: 1;
+	display: grid;
+	align-content: start;
+	gap: 1rem;
+	padding: 1.2rem;
+}
+
+.wizard-actions {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	padding: 1rem 1.2rem;
+	border-top: 1px solid var(--border);
+}
+
+.wizard-side {
+	display: grid;
+	align-content: start;
+	gap: 1rem;
+}
+
+.preview-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: var(--font-size-sm);
+}
+
+.preview-table th,
+.preview-table td {
+	padding: 0.7rem;
+	border-bottom: 1px solid var(--border);
+	text-align: left;
+	vertical-align: top;
+}
+
+.preview-table th {
+	color: var(--text-muted);
+	font-size: var(--font-size-xs);
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+}
+
+.preview-table tr:last-child td {
+	border-bottom: 0;
+}
+
+.preview-table-wrap {
+	max-height: 380px;
+	overflow: auto;
+	border: 1px solid var(--border);
+	border-radius: var(--radius-md);
+}
+
+.import-summary {
+	display: grid;
+	gap: 0.6rem;
+}
+
+.import-summary__row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	padding-bottom: 0.6rem;
+	border-bottom: 1px solid var(--border);
+}
+
+.import-summary__row:last-child {
+	padding-bottom: 0;
+	border-bottom: 0;
+}
+
+.code-example {
+	padding: 0.9rem;
+	border: 1px solid var(--border);
+	border-radius: var(--radius-sm);
+	background: var(--surface-muted);
+	color: var(--text-secondary);
+	font-family: var(--font-mono);
+	font-size: var(--font-size-xs);
+	white-space: pre-wrap;
+}

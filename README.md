@@ -1,37 +1,72 @@
 # FlashCore
 
-Aplicação web simples de revisão por flashcards, criada com HTML, CSS e JavaScript puro.
+Aplicação web local-first para criação, organização, importação e revisão de conteúdos por flashcards.
 
-## Sobre o projeto
+## Versão
 
-O FlashCore é um protótipo de aplicativo de estudos inspirado em sistemas de repetição e revisão por flashcards. A proposta é permitir que o usuário crie, organize, edite, mova, visualize e exclua flashcards de maneira livre e customizável.
+`v0.1 - Fundação Essencial`
 
-## Funcionalidades da v1
+## Funcionalidades
 
-- Criar baralhos
-- Criar flashcards
-- Editar flashcards
-- Excluir flashcards
-- Mover flashcards entre baralhos
-- Buscar e filtrar cards
-- Revisar cards
-- Marcar desempenho da revisão
-- Salvar dados no navegador com localStorage
+- Tela inicial com resumo e ações rápidas.
+- CRUD de baralhos e flashcards.
+- Pesquisa, filtros e movimentação de cards.
+- Importação por texto estruturado e CSV.
+- Prévia, validação e tratamento de duplicatas.
+- Revisão programada e revisão livre por baralho.
+- Classificação por Errei, Difícil, Bom e Fácil.
+- Relatório básico ao final da sessão.
+- Tema claro, escuro e preferência do sistema.
+- Persistência local versionada com `localStorage`.
+- Modais próprios e confirmação dupla para apagar os dados.
+- Interface responsiva com foco em dispositivos móveis.
 
-## Tecnologias utilizadas
+## Tecnologias
 
-- HTML
-- CSS
-- JavaScript
+- HTML5
+- CSS3
+- JavaScript ES Modules
 - localStorage
 
-## Status
+## Como executar
 
-Versão inicial do projeto.
+Por usar módulos JavaScript, abra o projeto por um servidor local. No VS Code, a extensão **Live Server** é suficiente.
 
-## Próximos passos
+Outra opção:
 
-- Melhorar organização por matérias e temas
-- Adicionar importação e exportação de dados
-- Criar estatísticas de revisão
-- Implementar sistema de revisão espaçada
+```bash
+python -m http.server 5500
+```
+
+Depois acesse `http://localhost:5500`.
+
+## Estrutura
+
+```text
+flashcore/
+├── docs/
+├── public/
+├── src/
+│   ├── scripts/
+│   │   ├── core/
+│   │   ├── features/
+│   │   └── shared/
+│   └── styles/
+│       ├── base/
+│       ├── base-layout/
+│       ├── components/
+│       ├── layouts/
+│       ├── pages/
+│       ├── themes/
+│       └── utilities/
+├── tests/
+└── index.html
+```
+
+## Dados
+
+Os dados ficam salvos no navegador sob a chave `flashcore.app.v0.1`. Não há sincronização em nuvem nesta versão.
+
+## Observação
+
+Os layouts desta versão são uma primeira implementação funcional baseada nos modelos visuais do projeto. Eles foram preparados para serem refinados durante o desenvolvimento.

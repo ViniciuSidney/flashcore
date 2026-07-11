@@ -1,0 +1,18 @@
+:root,
+html[data-theme='light'] {
+	--page-bg: #edf3fb;
+	--page-bg-accent: #e2ecf9;
+	--surface: #ffffff;
+	--surface-elevated: #ffffff;
+	--surface-soft: #f5f8fd;
+	--surface-muted: #eaf0f8;
+	--surface-strong: #dce7f4;
+	--text-primary: #142033;
+	--text-secondary: #40516b;
+	--text-muted: #6b7b92;
+	--text-inverse: #ffffff;
+	--border: #d7e1ee;
+	--border-strong: #b9c8db;
+	--overlay: rgba(15, 23, 42, 0.48);
+	--focus-ring: rgba(37, 99, 235, 0.35);
+}

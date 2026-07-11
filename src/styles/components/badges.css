@@ -1,0 +1,43 @@
+.badge,
+.tag,
+.status-pill {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.3rem;
+	width: fit-content;
+	border-radius: var(--radius-pill);
+	font-size: var(--font-size-xs);
+	font-weight: var(--weight-bold);
+}
+
+.badge {
+	min-height: 26px;
+	padding: 0.25rem 0.65rem;
+	background: var(--primary-soft);
+	color: var(--primary);
+}
+
+.tag {
+	padding: 0.22rem 0.55rem;
+	background: var(--surface-muted);
+	color: var(--text-secondary);
+}
+
+.tag-list {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+}
+
+.status-pill {
+	padding: 0.25rem 0.6rem;
+	background: var(--surface-muted);
+	color: var(--text-secondary);
+}
+
+.status-pill--due { background: var(--warning-soft); color: var(--warning); }
+.status-pill--new { background: var(--info-soft); color: var(--info); }
+.status-pill--hard { background: var(--danger-soft); color: var(--danger); }
+.status-pill--easy { background: var(--success-soft); color: var(--success); }

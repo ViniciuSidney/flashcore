@@ -1,0 +1,10 @@
+{
+  "name": "FlashCore",
+  "short_name": "FlashCore",
+  "description": "Aplicação local-first para organizar e revisar conteúdos com flashcards.",
+  "start_url": "../index.html#home",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": []
+}
