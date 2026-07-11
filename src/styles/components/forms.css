@@ -35,6 +35,110 @@
 	padding: 0 0.85rem;
 }
 
+/* Selects: aparência consistente nos estados fechado, hover, foco e aberto. */
+.select {
+	appearance: none;
+	-webkit-appearance: none;
+	padding-right: 3rem;
+	background-image:
+		linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+		linear-gradient(135deg, var(--text-muted) 50%, transparent 50%),
+		linear-gradient(to bottom, var(--border), var(--border));
+	background-position:
+		calc(100% - 1.2rem) calc(50% - 0.15rem),
+		calc(100% - 0.85rem) calc(50% - 0.15rem),
+		calc(100% - 2.45rem) 50%;
+	background-size: 0.38rem 0.38rem, 0.38rem 0.38rem, 1px 58%;
+	background-repeat: no-repeat;
+}
+
+.select:hover:not(:disabled) {
+	border-color: var(--primary);
+	background-color: var(--surface-soft);
+}
+
+.select:focus,
+.select:focus-visible {
+	border-color: var(--primary);
+	background-color: var(--surface-soft);
+	box-shadow: 0 0 0 4px var(--focus-ring);
+}
+
+@supports selector(select:open) {
+	.select:open {
+		border-color: var(--primary);
+		background-color: var(--surface-soft);
+		background-image:
+			linear-gradient(135deg, transparent 50%, var(--primary) 50%),
+			linear-gradient(45deg, var(--primary) 50%, transparent 50%),
+			linear-gradient(to bottom, var(--primary), var(--primary));
+		box-shadow: 0 0 0 4px var(--focus-ring);
+	}
+}
+
+.select:disabled {
+	cursor: not-allowed;
+	opacity: 0.62;
+}
+
+.select option {
+	background: var(--surface-elevated);
+	color: var(--text-primary);
+}
+
+.select option:checked {
+	background: var(--primary-soft-strong);
+	color: var(--text-primary);
+}
+
+/* Entrada de arquivo: substitui o botão visual nativo pelo padrão do app. */
+.input[type='file'] {
+	min-height: 54px;
+	padding: 0.38rem 0.45rem;
+	color: var(--text-secondary);
+	line-height: 1.35;
+}
+
+.input[type='file']::file-selector-button {
+	min-height: 38px;
+	margin-right: 0.75rem;
+	padding: 0.55rem 0.9rem;
+	border: 1px solid var(--border-strong);
+	border-radius: var(--radius-xs);
+	background: var(--surface-soft);
+	color: var(--text-primary);
+	font-weight: var(--weight-bold);
+	cursor: pointer;
+	transition:
+		background var(--transition-fast),
+		border-color var(--transition-fast),
+		color var(--transition-fast),
+		transform var(--transition-fast);
+}
+
+.input[type='file']::-webkit-file-upload-button {
+	min-height: 38px;
+	margin-right: 0.75rem;
+	padding: 0.55rem 0.9rem;
+	border: 1px solid var(--border-strong);
+	border-radius: var(--radius-xs);
+	background: var(--surface-soft);
+	color: var(--text-primary);
+	font-weight: var(--weight-bold);
+	cursor: pointer;
+}
+
+.input[type='file']:hover:not(:disabled)::file-selector-button {
+	border-color: var(--primary);
+	background: var(--primary);
+	color: var(--text-inverse);
+}
+
+.input[type='file']:active:not(:disabled)::file-selector-button {
+	background: var(--primary-active);
+	transform: translateY(1px);
+}
+
 .textarea {
 	min-height: 130px;
 	padding: 0.85rem;
