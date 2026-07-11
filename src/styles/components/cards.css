@@ -81,11 +81,22 @@
 	box-shadow: 0 10px 24px color-mix(in srgb, var(--deck-color, var(--primary)) 28%, transparent);
 }
 
-.deck-card h3,
-.flashcard-row h3 {
+.deck-card h3 {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+
+.flashcard-row h3 {
+	min-width: 0;
+	max-width: 100%;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	overflow: hidden;
+	white-space: normal;
+	overflow-wrap: anywhere;
+	word-break: break-word;
 }
 
 .deck-card__description {
@@ -120,7 +131,10 @@
 
 .flashcard-row {
 	width: 100%;
+	min-width: 0;
+	max-width: 100%;
 	display: grid;
+	overflow: hidden;
 	gap: 0.65rem;
 	padding: 0.9rem;
 	text-align: left;
@@ -133,12 +147,30 @@
 	box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
+.flashcard-row__top {
+	min-width: 0;
+	align-items: flex-start;
+}
+
+.flashcard-row__top .status-pill {
+	flex: 0 0 auto;
+}
+
 .flashcard-row p {
+	min-width: 0;
+	max-width: 100%;
 	color: var(--text-muted);
 	display: -webkit-box;
 	-webkit-line-clamp: 2;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
+	overflow-wrap: anywhere;
+	word-break: break-word;
+}
+
+.flashcard-row .tag-list {
+	min-width: 0;
+	max-width: 100%;
 }
 
 .flashcard-detail {
@@ -164,6 +196,10 @@
 }
 
 .flashcard-face p {
+	min-width: 0;
+	max-width: 100%;
 	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	word-break: break-word;
 	font-size: var(--font-size-lg);
 }

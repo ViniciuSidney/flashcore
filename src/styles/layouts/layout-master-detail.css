@@ -25,6 +25,8 @@
 }
 
 .master-detail {
+	width: 100%;
+	min-width: 0;
 	display: grid;
 	grid-template-columns: minmax(320px, 0.9fr) minmax(380px, 1.3fr);
 	gap: 1rem;
@@ -33,7 +35,10 @@
 
 .master-pane,
 .detail-pane {
+	width: 100%;
+	min-width: 0;
 	min-height: 0;
+	overflow: hidden;
 }
 
 .master-pane {
@@ -42,6 +47,7 @@
 }
 
 .master-toolbar {
+	min-width: 0;
 	display: grid;
 	grid-template-columns: 1fr 150px;
 	gap: 0.65rem;
@@ -50,13 +56,18 @@
 }
 
 .flashcard-list {
+	min-width: 0;
+	max-width: 100%;
 	display: grid;
 	gap: 0.65rem;
 	padding: 0.8rem;
-	overflow: auto;
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 
+
 .detail-pane .panel-body {
+	min-width: 0;
 	display: grid;
 	gap: 1rem;
 }
