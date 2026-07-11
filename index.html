@@ -6,9 +6,53 @@
 		<meta name="theme-color" content="#0f172a" />
 		<meta name="description" content="FlashCore: aplicação local-first para organizar e revisar conteúdos com flashcards." />
 		<title>FlashCore</title>
+
+		<!--
+			Em ambiente local, diferentes projetos abertos no mesmo endereço do Live Server
+			podem compartilhar um Service Worker antigo. Este saneamento é executado apenas
+			em localhost e evita que arquivos de outra aplicação sejam carregados por cache.
+		-->
+		<script>
+			(() => {
+				const localHosts = new Set(['localhost', '127.0.0.1', '::1']);
+				if (!localHosts.has(window.location.hostname)) return;
+
+				const reloadKey = 'flashcore.local-runtime-cleanup.v1';
+
+				async function clearLocalRuntimeCache() {
+					const wasControlled = Boolean(navigator.serviceWorker?.controller);
+
+					if ('serviceWorker' in navigator) {
+						const registrations = await navigator.serviceWorker.getRegistrations();
+						await Promise.all(
+							registrations
+								.filter((registration) => new URL(registration.scope).origin === window.location.origin)
+								.map((registration) => registration.unregister())
+						);
+					}
+
+					if ('caches' in window) {
+						const cacheNames = await window.caches.keys();
+						await Promise.all(cacheNames.map((cacheName) => window.caches.delete(cacheName)));
+					}
+
+					if (wasControlled && sessionStorage.getItem(reloadKey) !== 'done') {
+						sessionStorage.setItem(reloadKey, 'done');
+						window.location.reload();
+						return;
+					}
+
+					sessionStorage.removeItem(reloadKey);
+				}
+
+				clearLocalRuntimeCache().catch((error) => {
+					console.warn('[FlashCore] Não foi possível limpar o cache local antigo.', error);
+				});
+			})();
+		</script>
 		<link rel="icon" href="public/favicon.svg" type="image/svg+xml" />
 		<link rel="manifest" href="public/manifest.json" />
-		<link rel="stylesheet" href="src/styles/main.css" />
+		<link rel="stylesheet" href="src/styles/main.css?v=0.1.1" />
 	</head>
 	<body>
 		<a class="skip-link" href="#appView">Ir para o conteúdo</a>
@@ -104,6 +148,6 @@
 
 		<div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
 
-		<script type="module" src="src/scripts/main.js"></script>
+		<script type="module" src="src/scripts/main.js?v=0.1.1"></script>
 	</body>
 </html>
