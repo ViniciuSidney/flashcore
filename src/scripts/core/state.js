@@ -13,7 +13,8 @@ function createInitialState() {
 		settings: {
 			theme: THEMES.SYSTEM,
 			reviewLimit: APP_CONFIG.defaultReviewLimit,
-			showIntervals: true
+			showIntervals: true,
+			reviewScale: 100
 		},
 		decks: [],
 		cards: [],

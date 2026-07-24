@@ -10,6 +10,13 @@ export function getDeckById(deckId) {
 	return getState().decks.find((deck) => deck.id === deckId) ?? null;
 }
 
+export function getPreferredDeckId(preferredDeckId = '') {
+	const decks = getState().decks;
+	if (preferredDeckId && decks.some((deck) => deck.id === preferredDeckId)) return preferredDeckId;
+	return [...decks]
+		.sort((a, b) => (b.lastOpenedAt || b.updatedAt || 0) - (a.lastOpenedAt || a.updatedAt || 0))[0]?.id ?? '';
+}
+
 export function getDeckStats(deckId) {
 	const cards = getState().cards.filter((card) => card.deckId === deckId);
 	return {

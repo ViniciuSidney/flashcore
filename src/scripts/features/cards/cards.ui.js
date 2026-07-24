@@ -64,12 +64,17 @@ export function renderDeckDetail({deckId, selectedCardId = '', search = '', filt
 			<nav class="breadcrumbs"><a href="#decks">Baralhos</a><span>/</span><span>${escapeHTML(deck.name)}</span></nav>
 			<header class="deck-page-header">
 				<div class="deck-page-header__identity"><span class="deck-icon" style="--deck-color:${deck.color}" aria-hidden="true">${deck.icon}</span><div><h2>${escapeHTML(deck.name)}</h2><p>${escapeHTML(deck.description || `${pluralize(stats.total, 'flashcard')} organizado(s) neste baralho.`)}</p></div></div>
-				<div class="button-row">
-					<button class="button button--primary" type="button" data-action="start-free-review" data-deck-id="${deck.id}" ${stats.total === 0 ? 'disabled' : ''}>▶ Estudo livre</button>
-					<button class="button button--secondary" type="button" data-action="create-card" data-deck-id="${deck.id}">＋ Novo card</button>
-					<button class="button button--ghost" type="button" data-action="import-to-deck" data-deck-id="${deck.id}">⇩ Importar</button>
-					<button class="icon-button" type="button" data-action="edit-deck" data-deck-id="${deck.id}" aria-label="Editar baralho" title="Editar baralho">✎</button>
-					<button class="icon-button" type="button" data-action="delete-deck" data-deck-id="${deck.id}" aria-label="Excluir baralho" title="Excluir baralho">🗑</button>
+				<div class="button-row deck-page-header__actions">
+					<button class="button button--primary" type="button" data-action="create-card" data-deck-id="${deck.id}">＋ Novo flashcard</button>
+					<button class="button button--secondary" type="button" data-action="start-free-review" data-deck-id="${deck.id}" ${stats.total === 0 ? 'disabled' : ''}>▶ Estudo livre</button>
+					<details class="action-menu">
+						<summary class="icon-button" aria-label="Mais ações do baralho" title="Mais ações">⋯</summary>
+						<div class="action-menu__panel" role="menu">
+							<button class="action-menu__item" type="button" data-action="import-to-deck" data-deck-id="${deck.id}" role="menuitem"><span aria-hidden="true">⇩</span> Importar cards</button>
+							<button class="action-menu__item" type="button" data-action="edit-deck" data-deck-id="${deck.id}" role="menuitem"><span aria-hidden="true">✎</span> Editar baralho</button>
+							<button class="action-menu__item action-menu__item--danger" type="button" data-action="delete-deck" data-deck-id="${deck.id}" role="menuitem"><span aria-hidden="true">🗑</span> Excluir baralho</button>
+						</div>
+					</details>
 				</div>
 			</header>
 			<section class="master-detail ${showDetailMobile && selectedCard ? 'is-showing-detail' : ''}" id="masterDetail">

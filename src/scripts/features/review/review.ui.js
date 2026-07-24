@@ -56,6 +56,7 @@ function renderActiveReview(session) {
 	const intervals = getGradeIntervals(card);
 	const progress = session.cardIds.length ? (session.currentIndex / session.cardIds.length) * 100 : 0;
 	const showIntervals = state.settings.showIntervals;
+	const reviewScale = [100, 125, 150].includes(Number(state.settings.reviewScale)) ? Number(state.settings.reviewScale) : 100;
 	const preserveSchedule = sessionPreservesSchedule(session);
 	const modeLabel = preserveSchedule ? 'Estudo livre' : session.mode === 'scheduled' ? 'Revisão programada' : 'Revisão de reforço';
 
@@ -67,13 +68,20 @@ function renderActiveReview(session) {
 	`;
 
 	return `
-		<div class="review-layout${preserveSchedule ? ' review-layout--with-notice' : ''}">
+		<div class="review-layout${preserveSchedule ? ' review-layout--with-notice' : ''} review-layout--scale-${reviewScale}">
 			<div class="review-topbar">
 				<div class="review-progress">
 					<div class="flashcard-detail__meta"><span class="badge">${escapeHTML(modeLabel)}</span><span class="badge">${escapeHTML(deck?.name ?? 'Sem baralho')}</span><span class="text-muted">Card ${session.currentIndex + 1} de ${session.cardIds.length}</span></div>
 					<div class="progress-track" aria-label="Progresso da revisão"><span style="width:${progress}%"></span></div>
 				</div>
-				<button class="button button--ghost button--small" type="button" data-action="exit-review">Encerrar</button>
+				<div class="review-topbar__actions">
+					<div class="review-scale-control" role="group" aria-label="Escala da sessão">
+						<button class="review-scale-control__button" type="button" data-action="review-scale-down" aria-label="Diminuir escala da sessão" title="Diminuir escala" ${reviewScale === 100 ? 'disabled' : ''}>−</button>
+						<output class="review-scale-control__value" aria-live="polite">${reviewScale}%</output>
+						<button class="review-scale-control__button" type="button" data-action="review-scale-up" aria-label="Aumentar escala da sessão" title="Aumentar escala" ${reviewScale === 150 ? 'disabled' : ''}>+</button>
+					</div>
+					<button class="button button--ghost button--small" type="button" data-action="exit-review">Encerrar</button>
+				</div>
 			</div>
 			${preserveSchedule ? '<div class="review-mode-notice" role="note"><strong>Estudo livre</strong><span>Suas respostas serão contabilizadas somente nesta sessão. Datas, intervalos e progresso programado permanecerão iguais.</span></div>' : ''}
 			<article class="review-card">

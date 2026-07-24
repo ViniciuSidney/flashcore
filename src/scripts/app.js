@@ -5,15 +5,15 @@ import {initModal, openConfirm} from './shared/modal.js';
 import {initToast, showToast} from './shared/toast.js';
 import {debounce} from './shared/helpers.js';
 import {renderHome} from './features/home/home.ui.js';
-import {renderDecksGallery} from './features/decks/decks.ui.js';
+import {renderDecksGallery} from './features/decks/decks.ui.js?v=0.1.1';
 import {confirmDeleteDeck, promptCreateDeck, promptEditDeck} from './features/decks/decks.controller.js';
-import {createExampleData, getDeckById, touchDeck} from './features/decks/decks.model.js';
-import {renderDeckDetail} from './features/cards/cards.ui.js';
+import {createExampleData, getDeckById, getPreferredDeckId, touchDeck} from './features/decks/decks.model.js';
+import {renderDeckDetail} from './features/cards/cards.ui.js?v=0.1.1';
 import {confirmDeleteCard, promptCreateCard, promptEditCard, promptMoveCard} from './features/cards/cards.controller.js';
-import {renderReport, renderReview} from './features/review/review.ui.js?v=0.1.2';
+import {renderReport, renderReview} from './features/review/review.ui.js?v=0.1.4';
 import {discardSession, finishSession, getActiveSession, gradeCurrentCard, revealAnswer, startSession} from './features/review/review.service.js';
 import {buildImportPreview, finalizeImport, getImportDraft, goToImportStep, loadCSVFile, prepareImport, renderImport, resetImport, setImportValue} from './features/importer/importer.controller.js';
-import {applyTheme, changeReviewLimit, changeShowIntervals, changeTheme, confirmDeleteAllData, cycleTheme, renderSettings} from './features/settings/settings.controller.js';
+import {applyTheme, changeReviewLimit, changeReviewScale, changeShowIntervals, changeTheme, confirmDeleteAllData, cycleTheme, renderSettings} from './features/settings/settings.controller.js';
 
 const appView = document.querySelector('#appView');
 const pageTitle = document.querySelector('#pageTitle');
@@ -75,7 +75,32 @@ export function initApp() {
 	updateGlobalSummary();
 }
 
+function captureSearchFocus() {
+	const active = document.activeElement;
+	if (!(active instanceof HTMLInputElement) || !active.matches('#deckSearchInput, #cardSearchInput')) return null;
+	return {
+		id: active.id,
+		start: active.selectionStart ?? active.value.length,
+		end: active.selectionEnd ?? active.value.length,
+		direction: active.selectionDirection ?? 'none'
+	};
+}
+
+function restoreSearchFocus(snapshot) {
+	if (!snapshot) return false;
+	const input = document.getElementById(snapshot.id);
+	if (!(input instanceof HTMLInputElement)) return false;
+	input.focus({preventScroll: true});
+	try {
+		input.setSelectionRange(snapshot.start, snapshot.end, snapshot.direction);
+	} catch {
+		input.setSelectionRange(input.value.length, input.value.length);
+	}
+	return true;
+}
+
 function renderCurrentRoute(focusView = false) {
+	const searchFocus = captureSearchFocus();
 	const [eyebrow, title] = routeMeta[currentRoute.name] ?? routeMeta[ROUTES.HOME];
 	pageEyebrow.textContent = eyebrow;
 	pageTitle.textContent = title;
@@ -112,9 +137,11 @@ function renderCurrentRoute(focusView = false) {
 
 	appView.innerHTML = html;
 	updateNavigation();
+	const searchRestored = restoreSearchFocus(searchFocus);
 	const activelyReviewing = currentRoute.name === ROUTES.REVIEW && Boolean(getActiveSession());
 	document.body.classList.toggle('is-reviewing', activelyReviewing);
-	if (focusView) appView.focus({preventScroll: true});
+	document.documentElement.classList.toggle('is-reviewing', activelyReviewing);
+	if (focusView && !searchRestored) appView.focus({preventScroll: true});
 }
 
 function updateNavigation() {
@@ -138,8 +165,15 @@ function bindGlobalEvents() {
 }
 
 async function handleClick(event) {
+	const clickedMenu = event.target.closest('.action-menu');
+	document.querySelectorAll('.action-menu[open]').forEach((menu) => {
+		if (menu !== clickedMenu) menu.removeAttribute('open');
+	});
+
 	const trigger = event.target.closest('[data-action]');
 	if (!trigger) return;
+	const parentMenu = trigger.closest('.action-menu');
+	if (parentMenu) parentMenu.removeAttribute('open');
 	const {action, deckId, cardId, category, grade, cardIds, preserveSchedule} = trigger.dataset;
 
 	switch (action) {
@@ -165,7 +199,8 @@ async function handleClick(event) {
 		}
 		case 'quick-add-card':
 		case 'create-card': {
-			let targetDeckId = deckId || (currentRoute.name === ROUTES.DECK ? currentRoute.params.deckId : getState().decks[0]?.id);
+			const contextualDeckId = currentRoute.name === ROUTES.DECK ? currentRoute.params.deckId : '';
+			let targetDeckId = getPreferredDeckId(deckId || contextualDeckId);
 			if (!targetDeckId) {
 				const deck = await promptCreateDeck();
 				targetDeckId = deck?.id;
@@ -224,6 +259,20 @@ async function handleClick(event) {
 			const result = gradeCurrentCard(grade);
 			if (result.finished) navigate(ROUTES.REPORT);
 			else renderCurrentRoute();
+			break;
+		}
+		case 'review-scale-down': {
+			const levels = [100, 125, 150];
+			const current = Number(getState().settings.reviewScale) || 100;
+			const currentIndex = Math.max(0, levels.indexOf(current));
+			changeReviewScale(levels[Math.max(0, currentIndex - 1)]);
+			break;
+		}
+		case 'review-scale-up': {
+			const levels = [100, 125, 150];
+			const current = Number(getState().settings.reviewScale) || 100;
+			const currentIndex = Math.max(0, levels.indexOf(current));
+			changeReviewScale(levels[Math.min(levels.length - 1, currentIndex + 1)]);
 			break;
 		}
 		case 'exit-review': {

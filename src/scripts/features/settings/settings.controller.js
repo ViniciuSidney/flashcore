@@ -39,6 +39,14 @@ export function changeShowIntervals(enabled) {
 	showToast('Preferência de intervalos atualizada.');
 }
 
+export function changeReviewScale(value) {
+	const allowedScales = [100, 125, 150];
+	const scale = Number(value);
+	mutateState((state) => {
+		state.settings.reviewScale = allowedScales.includes(scale) ? scale : 100;
+	}, 'settings:review-scale');
+}
+
 export async function confirmDeleteAllData() {
 	const state = getState();
 	const first = await openConfirm({

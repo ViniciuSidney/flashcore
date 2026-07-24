@@ -27,7 +27,14 @@ export function renderDecksGallery({search = '', order = 'recent'} = {}) {
 						<span class="deck-icon" style="--deck-color:${deck.color}" aria-hidden="true">${deck.icon}</span>
 						<div><h3>${escapeHTML(deck.name)}</h3><span class="badge">${stats.due > 0 ? `${stats.due} para revisar` : 'Em dia'}</span></div>
 					</div>
-					<button class="icon-button icon-button--quiet" type="button" data-action="edit-deck" data-deck-id="${deck.id}" aria-label="Editar ${escapeHTML(deck.name)}" title="Editar baralho">⋯</button>
+					<details class="action-menu">
+						<summary class="icon-button icon-button--quiet" aria-label="Mais ações de ${escapeHTML(deck.name)}" title="Mais ações">⋯</summary>
+						<div class="action-menu__panel" role="menu">
+							<button class="action-menu__item" type="button" data-action="import-to-deck" data-deck-id="${deck.id}" role="menuitem"><span aria-hidden="true">⇩</span> Importar cards</button>
+							<button class="action-menu__item" type="button" data-action="edit-deck" data-deck-id="${deck.id}" role="menuitem"><span aria-hidden="true">✎</span> Editar baralho</button>
+							<button class="action-menu__item action-menu__item--danger" type="button" data-action="delete-deck" data-deck-id="${deck.id}" role="menuitem"><span aria-hidden="true">🗑</span> Excluir baralho</button>
+						</div>
+					</details>
 				</div>
 				<p class="deck-card__description">${escapeHTML(deck.description || 'Sem descrição. Você pode editar este baralho quando quiser.')}</p>
 				<div class="deck-card__stats">
@@ -38,8 +45,6 @@ export function renderDecksGallery({search = '', order = 'recent'} = {}) {
 				<div class="deck-card__actions">
 					<a class="button button--primary button--small" href="#deck/${encodeURIComponent(deck.id)}">Abrir</a>
 					<button class="button button--secondary button--small" type="button" data-action="start-free-review" data-deck-id="${deck.id}" ${stats.total === 0 ? 'disabled' : ''}>Estudo livre</button>
-					<button class="button button--ghost button--small" type="button" data-action="import-to-deck" data-deck-id="${deck.id}">Importar</button>
-					<button class="button button--danger button--small" type="button" data-action="delete-deck" data-deck-id="${deck.id}">Excluir</button>
 				</div>
 			</article>
 		`;

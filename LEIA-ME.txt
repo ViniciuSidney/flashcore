@@ -1,0 +1,29 @@
+FLASHCORE — CORREÇÃO DA ESCALA DA SESSÃO SEM ROLAGEM DA PÁGINA
+
+Arquivos incluídos:
+- index.html
+- src/scripts/app.js
+- src/styles/main.css
+- src/styles/layouts/layout-focus.css
+- src/styles/utilities/responsive.css
+
+COMO APLICAR
+1. Pare o Live Server.
+2. Extraia este ZIP.
+3. Copie o conteúdo extraído para a raiz do projeto FlashCore.
+4. Confirme a substituição dos arquivos.
+5. Inicie novamente o Live Server.
+6. Faça um F5 comum.
+
+O QUE FOI CORRIGIDO
+- O controle deixou de usar a propriedade CSS zoom, que aumentava a altura total da página.
+- A sessão agora permanece limitada à altura visível da janela.
+- A página não ganha rolagem durante uma revisão ativa.
+- O card ocupa exatamente o espaço restante abaixo do cabeçalho e do aviso.
+- Os botões de classificação permanecem visíveis na parte inferior.
+- Em 150%, a sessão amplia textos e componentes e também aproveita melhor a largura da tela.
+- Conteúdos excepcionalmente longos rolam somente dentro da área do card, sem mover a tela inteira.
+- Ao sair da sessão, a rolagem normal das demais telas é restaurada.
+
+DADOS
+Nenhum dado do localStorage é removido ou alterado por esta correção.
