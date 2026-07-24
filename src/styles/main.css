@@ -21,13 +21,13 @@
 @import url('./layouts/layout-hub.css');
 @import url('./layouts/layout-gallery.css');
 @import url('./layouts/layout-master-detail.css?v=0.1.1');
-@import url('./layouts/layout-focus.css?v=0.1.1');
+@import url('./layouts/layout-focus.css?v=0.1.2');
 @import url('./layouts/layout-wizard.css');
 @import url('./layouts/layout-settings.css');
-@import url('./layouts/layout-report.css');
+@import url('./layouts/layout-report.css?v=0.1.1');
 
 @import url('./pages/app.css');
 
 @import url('./utilities/states.css');
 @import url('./utilities/scrollbar.css');
-@import url('./utilities/responsive.css');
+@import url('./utilities/responsive.css?v=0.1.1');

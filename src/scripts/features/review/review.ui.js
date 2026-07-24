@@ -67,7 +67,7 @@ function renderActiveReview(session) {
 	`;
 
 	return `
-		<div class="review-layout">
+		<div class="review-layout${preserveSchedule ? ' review-layout--with-notice' : ''}">
 			<div class="review-topbar">
 				<div class="review-progress">
 					<div class="flashcard-detail__meta"><span class="badge">${escapeHTML(modeLabel)}</span><span class="badge">${escapeHTML(deck?.name ?? 'Sem baralho')}</span><span class="text-muted">Card ${session.currentIndex + 1} de ${session.cardIds.length}</span></div>
@@ -102,23 +102,28 @@ export function renderReport() {
 	const preserveSchedule = sessionPreservesSchedule(session);
 	const sessionModeLabel = preserveSchedule ? 'Estudo livre' : session.mode === 'scheduled' ? 'Revisão programada' : 'Revisão de reforço';
 	const max = Math.max(session.answered, 1);
+	const scoreHeadline = session.answered === 0 ? 'Sessão sem respostas' : score >= 75 ? 'Base bem consolidada' : score >= 50 ? 'Bom caminho' : 'Há pontos para reforçar';
+	const resultHints = preserveSchedule
+		? {again: 'ponto para retomar', hard: 'exigiu mais esforço', good: 'recordação adequada', easy: 'conteúdo firme'}
+		: {again: 'intervalo curto', hard: 'reforçar em breve', good: 'recordação adequada', easy: 'conteúdo firme'};
 	const bar = (label, value, color) => `<div class="result-bar"><strong>${label}</strong><div class="result-bar__track"><span style="width:${(value / max) * 100}%;--bar-color:${color}"></span></div><span>${value}</span></div>`;
 
 	return `
 		<div class="report-layout">
-			<header class="page-intro"><div class="page-intro__copy"><span class="eyebrow">${escapeHTML(sessionModeLabel)} concluído</span><h2>Bom trabalho: você recuperou o conteúdo ativamente.</h2><p>${preserveSchedule ? 'Esta foi uma prática complementar: nenhuma data, intervalo ou progresso programado foi alterado.' : 'Use o resultado como orientação, não como julgamento. Os erros mostram o que merece voltar à fila.'}</p></div></header>
+			<header class="page-intro"><div class="page-intro__copy"><span class="eyebrow">${escapeHTML(sessionModeLabel)} concluído</span><h2>Bom trabalho: você recuperou o conteúdo ativamente.</h2><p>${preserveSchedule ? 'Esta foi uma prática complementar. O resultado descreve apenas esta sessão.' : 'Use o resultado como orientação, não como julgamento. Os erros mostram o que merece voltar à fila.'}</p></div></header>
 			<section class="report-hero">
-				<div class="report-summary"><span class="eyebrow">Desempenho da sessão</span><span class="report-summary__score">${score}%</span><h2>${score >= 75 ? 'Base bem consolidada' : score >= 50 ? 'Bom caminho' : 'Há pontos para reforçar'}</h2><p class="text-muted">${session.completed ? 'Sessão concluída por completo.' : 'Sessão encerrada antes do fim.'}</p></div>
+				<div class="report-summary"><span class="eyebrow">Índice de recordação</span><span class="report-summary__score">${score}%</span><h2>${scoreHeadline}</h2><p class="report-summary__definition">Percentual de cards classificados como Bom ou Fácil nesta sessão.</p><p class="text-muted">${session.completed ? 'Sessão concluída por completo.' : 'Sessão encerrada antes do fim.'}</p></div>
 				<div class="report-side">
 					<article class="metric-card"><div class="metric-card__top"><span>Cards respondidos</span><span>◫</span></div><strong>${session.answered}</strong><small>de ${session.total} na fila</small></article>
 					<article class="metric-card"><div class="metric-card__top"><span>Duração</span><span>◷</span></div><strong>${formatDuration(session.durationMs)}</strong><small>tempo de estudo ativo</small></article>
 				</div>
 			</section>
+			${preserveSchedule ? '<div class="report-schedule-note" role="note"><span aria-hidden="true">✓</span><div><strong>Cronograma preservado</strong><p>Nenhuma data, intervalo, dificuldade calculada ou progresso programado foi alterado.</p></div></div>' : ''}
 			<section class="report-metrics">
-				<article class="metric-card"><div class="metric-card__top"><span>Errei</span><span>×</span></div><strong class="text-danger">${counts.again}</strong><small>intervalo curto</small></article>
-				<article class="metric-card"><div class="metric-card__top"><span>Difícil</span><span>!</span></div><strong class="text-warning">${counts.hard}</strong><small>reforçar em breve</small></article>
-				<article class="metric-card"><div class="metric-card__top"><span>Bom</span><span>✓</span></div><strong class="text-success">${counts.good}</strong><small>recordação adequada</small></article>
-				<article class="metric-card"><div class="metric-card__top"><span>Fácil</span><span>⚡</span></div><strong class="text-primary">${counts.easy}</strong><small>conteúdo firme</small></article>
+				<article class="metric-card"><div class="metric-card__top"><span>Errei</span><span>×</span></div><strong class="text-danger">${counts.again}</strong><small>${resultHints.again}</small></article>
+				<article class="metric-card"><div class="metric-card__top"><span>Difícil</span><span>!</span></div><strong class="text-warning">${counts.hard}</strong><small>${resultHints.hard}</small></article>
+				<article class="metric-card"><div class="metric-card__top"><span>Bom</span><span>✓</span></div><strong class="text-success">${counts.good}</strong><small>${resultHints.good}</small></article>
+				<article class="metric-card"><div class="metric-card__top"><span>Fácil</span><span>⚡</span></div><strong class="text-primary">${counts.easy}</strong><small>${resultHints.easy}</small></article>
 			</section>
 			<section class="panel">
 				<header class="panel-header"><div class="panel-header__copy"><span class="eyebrow">Distribuição</span><h2>Como os cards foram classificados</h2></div></header>

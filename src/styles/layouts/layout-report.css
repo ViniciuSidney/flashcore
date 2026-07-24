@@ -29,6 +29,43 @@
 	color: var(--primary);
 }
 
+.report-summary__definition {
+	max-width: 48ch;
+	color: var(--text-secondary);
+	line-height: var(--line-normal);
+}
+
+.report-schedule-note {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--space-sm);
+	padding: var(--space-md);
+	border: 1px solid color-mix(in srgb, var(--success) 34%, var(--border));
+	border-radius: var(--radius-md);
+	background: var(--success-soft);
+}
+
+.report-schedule-note > span {
+	flex: 0 0 auto;
+	width: 1.75rem;
+	height: 1.75rem;
+	display: grid;
+	place-items: center;
+	border-radius: var(--radius-pill);
+	background: var(--success);
+	color: #fff;
+	font-weight: var(--weight-bold);
+}
+
+.report-schedule-note div {
+	display: grid;
+	gap: var(--space-2xs);
+}
+
+.report-schedule-note p {
+	color: var(--text-secondary);
+}
+
 .report-side {
 	display: grid;
 	gap: 0.8rem;

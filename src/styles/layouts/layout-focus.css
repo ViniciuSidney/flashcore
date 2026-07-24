@@ -5,6 +5,16 @@
 	gap: 1rem;
 }
 
+body.is-reviewing .review-layout {
+	width: min(100%, var(--focus-max));
+	min-height: calc(100vh - clamp(1.5rem, 4vw, 3rem));
+	grid-template-rows: auto minmax(420px, 1fr);
+}
+
+body.is-reviewing .review-layout--with-notice {
+	grid-template-rows: auto auto minmax(420px, 1fr);
+}
+
 .review-topbar {
 	display: flex;
 	align-items: center;
@@ -45,6 +55,11 @@
 		radial-gradient(circle at 100% 0, var(--primary-soft), transparent 20rem),
 		var(--surface);
 	box-shadow: var(--shadow-md);
+}
+
+body.is-reviewing .review-card {
+	min-height: 0;
+	height: 100%;
 }
 
 .review-card__content {
@@ -131,18 +146,15 @@
 	border-radius: var(--radius-md);
 	background: color-mix(in srgb, var(--primary) 8%, var(--surface));
 	color: var(--text-muted);
-	overflow: hidden;
 }
 
 .review-mode-notice strong {
 	display: block;
 	color: var(--primary);
-	line-height: 1.25;
-	overflow-wrap: anywhere;
+	line-height: 1.2;
 }
 
 .review-mode-notice span {
 	display: block;
 	line-height: 1.5;
-	overflow-wrap: anywhere;
 }

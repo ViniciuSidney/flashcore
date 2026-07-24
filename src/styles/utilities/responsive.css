@@ -132,18 +132,29 @@
 	}
 }
 
-body.is-reviewing .app-sidebar {
-	display: none;
+body.is-reviewing {
+	padding-bottom: 0;
 }
 
-body.is-reviewing .app-shell {
-	grid-template-columns: 1fr;
-}
-
+body.is-reviewing .app-sidebar,
+body.is-reviewing .app-header,
 body.is-reviewing .bottom-nav {
 	display: none;
 }
 
-body.is-reviewing {
-	padding-bottom: 0;
+body.is-reviewing .app-shell {
+	min-height: 100vh;
+	grid-template-columns: 1fr;
+}
+
+body.is-reviewing .app-stage,
+body.is-reviewing .app-view {
+	min-height: 100vh;
+}
+
+body.is-reviewing .app-view {
+	width: 100%;
+	max-width: none;
+	margin: 0;
+	padding: clamp(0.75rem, 2vw, 1.5rem);
 }

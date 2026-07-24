@@ -10,7 +10,7 @@ import {confirmDeleteDeck, promptCreateDeck, promptEditDeck} from './features/de
 import {createExampleData, getDeckById, touchDeck} from './features/decks/decks.model.js';
 import {renderDeckDetail} from './features/cards/cards.ui.js';
 import {confirmDeleteCard, promptCreateCard, promptEditCard, promptMoveCard} from './features/cards/cards.controller.js';
-import {renderReport, renderReview} from './features/review/review.ui.js';
+import {renderReport, renderReview} from './features/review/review.ui.js?v=0.1.2';
 import {discardSession, finishSession, getActiveSession, gradeCurrentCard, revealAnswer, startSession} from './features/review/review.service.js';
 import {buildImportPreview, finalizeImport, getImportDraft, goToImportStep, loadCSVFile, prepareImport, renderImport, resetImport, setImportValue} from './features/importer/importer.controller.js';
 import {applyTheme, changeReviewLimit, changeShowIntervals, changeTheme, confirmDeleteAllData, cycleTheme, renderSettings} from './features/settings/settings.controller.js';
