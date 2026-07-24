@@ -140,7 +140,7 @@ function bindGlobalEvents() {
 async function handleClick(event) {
 	const trigger = event.target.closest('[data-action]');
 	if (!trigger) return;
-	const {action, deckId, cardId, category, grade, cardIds} = trigger.dataset;
+	const {action, deckId, cardId, category, grade, cardIds, preserveSchedule} = trigger.dataset;
 
 	switch (action) {
 		case 'create-deck': {
@@ -214,7 +214,7 @@ async function handleClick(event) {
 			launchReview({mode: 'free', deckId});
 			break;
 		case 'retry-session':
-			launchReview({mode: 'retry', cardIds: cardIds ? cardIds.split(',').filter(Boolean) : []});
+			launchReview({mode: 'retry', cardIds: cardIds ? cardIds.split(',').filter(Boolean) : [], preserveSchedule: preserveSchedule === 'true'});
 			break;
 		case 'reveal-answer':
 			revealAnswer();
@@ -229,7 +229,7 @@ async function handleClick(event) {
 		case 'exit-review': {
 			const confirmation = await openConfirm({
 				title: 'Encerrar a sessão agora?',
-				eyebrow: 'Revisão em andamento',
+				eyebrow: getActiveSession()?.preserveSchedule ? 'Estudo livre em andamento' : 'Revisão em andamento',
 				icon: '◈',
 				message: 'As respostas já registradas serão mantidas e a sessão aparecerá como parcial no relatório.',
 				confirmText: 'Encerrar sessão',

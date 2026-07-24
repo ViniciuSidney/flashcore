@@ -121,3 +121,28 @@
 .grade-button--hard { color: var(--warning); background: var(--warning-soft); }
 .grade-button--good { color: var(--success); background: var(--success-soft); }
 .grade-button--easy { color: var(--primary); background: var(--primary-soft); }
+
+
+.review-mode-notice {
+	display: grid;
+	gap: 0.35rem;
+	padding: var(--space-sm, 0.75rem) var(--space-md, 1rem);
+	border: 1px solid color-mix(in srgb, var(--primary) 28%, var(--border));
+	border-radius: var(--radius-md);
+	background: color-mix(in srgb, var(--primary) 8%, var(--surface));
+	color: var(--text-muted);
+	overflow: hidden;
+}
+
+.review-mode-notice strong {
+	display: block;
+	color: var(--primary);
+	line-height: 1.25;
+	overflow-wrap: anywhere;
+}
+
+.review-mode-notice span {
+	display: block;
+	line-height: 1.5;
+	overflow-wrap: anywhere;
+}

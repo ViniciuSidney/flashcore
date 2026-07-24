@@ -57,7 +57,7 @@ export function renderHome() {
 				<p>${stats.due > 0 ? `${pluralize(stats.due, 'card')} para revisar agora.` : 'Nenhuma revisão pendente.'}</p>
 				<div class="button-row">
 					<a class="button button--ghost button--small" href="#deck/${encodeURIComponent(deck.id)}">Abrir</a>
-					<button class="button button--secondary button--small" type="button" data-action="start-free-review" data-deck-id="${deck.id}" ${stats.total === 0 ? 'disabled' : ''}>Revisar</button>
+					<button class="button button--secondary button--small" type="button" data-action="start-free-review" data-deck-id="${deck.id}" ${stats.total === 0 ? 'disabled' : ''}>Estudar</button>
 				</div>
 			</article>
 		`;
@@ -70,7 +70,7 @@ export function renderHome() {
 					<div class="hero-card__copy">
 						<span class="eyebrow">Revisões de hoje</span>
 						<h2><span class="hero-card__count">${dueCards.length}</span> ${dueCards.length === 1 ? 'card espera' : 'cards esperam'} por você.</h2>
-						<p>${dueCards.length > 0 ? 'Uma sessão curta agora ajuda a manter os conteúdos vivos na memória.' : 'Tudo em dia. Você ainda pode fazer uma revisão livre de qualquer baralho.'}</p>
+						<p>${dueCards.length > 0 ? 'Uma sessão curta agora ajuda a manter os conteúdos vivos na memória.' : 'Tudo em dia. Você ainda pode fazer um Estudo livre em qualquer baralho.'}</p>
 					</div>
 					<div class="button-row">
 						<button class="button button--primary" type="button" data-action="start-scheduled-review" ${dueCards.length === 0 ? 'disabled' : ''}>▶ Iniciar revisão</button>

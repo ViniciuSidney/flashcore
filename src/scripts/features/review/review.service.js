@@ -18,6 +18,10 @@ export function revealAnswer() {
 	answerRevealed = true;
 }
 
+export function sessionPreservesSchedule(session = activeSession) {
+	return Boolean(session?.preserveSchedule || session?.mode === 'free');
+}
+
 export function getGradeIntervals(card) {
 	const day = 24 * 60 * 60 * 1000;
 	return {
@@ -28,7 +32,7 @@ export function getGradeIntervals(card) {
 	};
 }
 
-export function startSession({mode = 'scheduled', deckId = null, cardIds = null} = {}) {
+export function startSession({mode = 'scheduled', deckId = null, cardIds = null, preserveSchedule = mode === 'free'} = {}) {
 	const state = getState();
 	const limit = Number(state.settings.reviewLimit) || APP_CONFIG.defaultReviewLimit;
 	let cards = state.cards.filter((card) => !deckId || card.deckId === deckId);
@@ -46,6 +50,7 @@ export function startSession({mode = 'scheduled', deckId = null, cardIds = null}
 	activeSession = {
 		id: createId(),
 		mode,
+		preserveSchedule: Boolean(preserveSchedule),
 		deckId,
 		cardIds: cards.map((card) => card.id),
 		currentIndex: 0,
@@ -67,19 +72,29 @@ export function gradeCurrentCard(grade) {
 	if (!activeSession || !card || !Object.values(GRADES).includes(grade)) return {finished: false};
 	const interval = getGradeIntervals(card)[grade];
 	const now = Date.now();
+	const preserveSchedule = sessionPreservesSchedule(activeSession);
+	const nextReviewAt = preserveSchedule ? card.nextReviewAt : now + interval.milliseconds;
 
-	mutateState((state) => {
-		const storedCard = state.cards.find((item) => item.id === card.id);
-		if (!storedCard) return;
-		storedCard.reviewCount += 1;
-		storedCard.correctStreak = grade === GRADES.AGAIN ? 0 : storedCard.correctStreak + 1;
-		storedCard.difficulty = grade === GRADES.AGAIN || grade === GRADES.HARD ? 'hard' : grade === GRADES.EASY ? 'easy' : 'medium';
-		storedCard.lastReviewedAt = now;
-		storedCard.nextReviewAt = now + interval.milliseconds;
-		storedCard.updatedAt = now;
-	}, 'review:grade');
+	if (!preserveSchedule) {
+		mutateState((state) => {
+			const storedCard = state.cards.find((item) => item.id === card.id);
+			if (!storedCard) return;
+			storedCard.reviewCount += 1;
+			storedCard.correctStreak = grade === GRADES.AGAIN ? 0 : storedCard.correctStreak + 1;
+			storedCard.difficulty = grade === GRADES.AGAIN || grade === GRADES.HARD ? 'hard' : grade === GRADES.EASY ? 'easy' : 'medium';
+			storedCard.lastReviewedAt = now;
+			storedCard.nextReviewAt = nextReviewAt;
+			storedCard.updatedAt = now;
+		}, 'review:grade');
+	}
 
-	activeSession.results.push({cardId: card.id, grade, answeredAt: now, nextReviewAt: now + interval.milliseconds});
+	activeSession.results.push({
+		cardId: card.id,
+		grade,
+		answeredAt: now,
+		nextReviewAt,
+		schedulePreserved: preserveSchedule
+	});
 	activeSession.currentIndex += 1;
 	answerRevealed = false;
 

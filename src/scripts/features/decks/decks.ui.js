@@ -37,7 +37,7 @@ export function renderDecksGallery({search = '', order = 'recent'} = {}) {
 				</div>
 				<div class="deck-card__actions">
 					<a class="button button--primary button--small" href="#deck/${encodeURIComponent(deck.id)}">Abrir</a>
-					<button class="button button--secondary button--small" type="button" data-action="start-free-review" data-deck-id="${deck.id}" ${stats.total === 0 ? 'disabled' : ''}>Revisar livre</button>
+					<button class="button button--secondary button--small" type="button" data-action="start-free-review" data-deck-id="${deck.id}" ${stats.total === 0 ? 'disabled' : ''}>Estudo livre</button>
 					<button class="button button--ghost button--small" type="button" data-action="import-to-deck" data-deck-id="${deck.id}">Importar</button>
 					<button class="button button--danger button--small" type="button" data-action="delete-deck" data-deck-id="${deck.id}">Excluir</button>
 				</div>
