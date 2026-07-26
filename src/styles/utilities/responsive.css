@@ -235,3 +235,121 @@ body.is-reviewing .app-view {
 	margin: 0;
 	padding: clamp(0.75rem, 2vw, 1.5rem);
 }
+
+/* Bloco 6 — endurecimento responsivo e prevenção de overflow. */
+.page-stack,
+.page-intro,
+.page-intro__copy,
+.deck-page-header,
+.deck-page-header__identity,
+.deck-page-header__identity > div,
+.panel,
+.panel-header__copy,
+.wizard-layout,
+.wizard-main,
+.wizard-content,
+.wizard-side,
+.settings-layout,
+.settings-content,
+.review-layout,
+.review-progress,
+.review-card,
+.review-card__content {
+	min-width: 0;
+}
+
+.action-menu__panel {
+	max-width: min(17rem, calc(100vw - 1.5rem));
+	overflow-wrap: anywhere;
+}
+
+@media (max-width: 680px) {
+	.review-layout--scale-125 {
+		--review-front-size: clamp(1.9rem, 8vw, 2.3rem);
+		--review-back-size: clamp(1.08rem, 4.8vw, 1.3rem);
+		--review-card-padding: 1.25rem;
+		--review-card-gap: 1.25rem;
+		--review-grade-height: 78px;
+	}
+
+	.review-layout--scale-150 {
+		--review-front-size: clamp(2.1rem, 9vw, 2.55rem);
+		--review-back-size: clamp(1.15rem, 5.2vw, 1.42rem);
+		--review-card-padding: 1.35rem;
+		--review-card-gap: 1.35rem;
+		--review-grade-height: 82px;
+	}
+
+	.review-layout--scale-125 .review-mode-notice,
+	.review-layout--scale-150 .review-mode-notice {
+		font-size: 1rem;
+	}
+}
+
+@media (max-width: 420px) {
+	.app-header__title {
+		min-width: 0;
+	}
+
+	.app-header__title h1 {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.action-menu__panel {
+		max-width: calc(100vw - 1.5rem);
+	}
+}
+
+/* Paisagem baixa: mantém controles e classificações visíveis. */
+@media (max-height: 520px) and (min-width: 500px) {
+	body.is-reviewing .app-view {
+		padding: 0.5rem;
+	}
+
+	body.is-reviewing .review-layout {
+		gap: 0.5rem;
+	}
+
+	.review-mode-notice {
+		grid-template-columns: auto minmax(0, 1fr);
+		align-items: start;
+		gap: 0.75rem;
+		padding: 0.55rem 0.75rem;
+	}
+
+	.review-mode-notice strong {
+		white-space: nowrap;
+	}
+
+	.review-card {
+		--review-card-padding: 0.75rem 1rem;
+		--review-card-gap: 0.75rem;
+		--review-grade-height: 54px;
+	}
+
+	.review-card__content {
+		padding-right: 0.25rem;
+	}
+
+	.review-face--back {
+		padding-top: 0.75rem;
+	}
+
+	.grade-grid {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 0.45rem;
+	}
+
+	.grade-button {
+		padding: 0.4rem;
+	}
+
+	.review-layout--scale-125,
+	.review-layout--scale-150 {
+		--review-front-size: clamp(1.55rem, 4vw, 2.2rem);
+		--review-back-size: clamp(1rem, 2.5vw, 1.2rem);
+	}
+}
+
