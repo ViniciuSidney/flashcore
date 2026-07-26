@@ -1,15 +1,15 @@
 import {ROUTES} from './core/constants.js';
 import {getState, subscribeState} from './core/state.js';
 import {navigate, startRouter} from './core/router.js';
-import {initModal, openConfirm} from './shared/modal.js';
+import {initModal, openConfirm} from './shared/modal.js?v=0.1.1';
 import {initToast, showToast} from './shared/toast.js';
 import {debounce} from './shared/helpers.js';
 import {renderHome} from './features/home/home.ui.js';
 import {renderDecksGallery} from './features/decks/decks.ui.js?v=0.1.1';
-import {confirmDeleteDeck, promptCreateDeck, promptEditDeck} from './features/decks/decks.controller.js';
+import {confirmDeleteDeck, promptCreateDeck, promptEditDeck} from './features/decks/decks.controller.js?v=0.1.1';
 import {createExampleData, getDeckById, getPreferredDeckId, touchDeck} from './features/decks/decks.model.js';
 import {renderDeckDetail} from './features/cards/cards.ui.js?v=0.1.1';
-import {confirmDeleteCard, promptCreateCard, promptEditCard, promptMoveCard} from './features/cards/cards.controller.js';
+import {confirmDeleteCard, promptCreateCard, promptEditCard, promptMoveCard} from './features/cards/cards.controller.js?v=0.1.1';
 import {renderReport, renderReview} from './features/review/review.ui.js?v=0.1.4';
 import {discardSession, finishSession, getActiveSession, gradeCurrentCard, revealAnswer, startSession} from './features/review/review.service.js';
 import {buildImportPreview, finalizeImport, getImportDraft, goToImportStep, loadCSVFile, prepareImport, renderImport, resetImport, setImportValue} from './features/importer/importer.controller.js';

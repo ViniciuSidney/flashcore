@@ -1,14 +1,15 @@
-import {DIFFICULTIES} from '../../core/constants.js';
 import {getState} from '../../core/state.js';
 import {escapeHTML} from '../../shared/helpers.js';
-import {openConfirm, openForm} from '../../shared/modal.js';
+import {openConfirm, openForm} from '../../shared/modal.js?v=0.1.1';
 import {showToast} from '../../shared/toast.js';
 import {validateCard} from '../../shared/validators.js';
-import {createCard, deleteCard, getCardById, moveCard, updateCard} from './cards.model.js';
+import {createCard, deleteCard, getCardById, moveCard, updateCard} from './cards.model.js?v=0.1.1';
 
 function cardFormHTML(card = {}, defaultDeckId = '') {
 	const state = getState();
-	const deckOptions = state.decks.map((deck) => `<option value="${deck.id}" ${(card.deckId || defaultDeckId) === deck.id ? 'selected' : ''}>${escapeHTML(deck.name)}</option>`).join('');
+	const selectedDeckId = card.deckId || defaultDeckId;
+	const deckOptions = state.decks.map((deck) => `<option value="${deck.id}" ${selectedDeckId === deck.id ? 'selected' : ''}>${escapeHTML(deck.name)}</option>`).join('');
+	const isNewCard = !card.id;
 	return `
 		<div class="form-grid">
 			<label class="field field--full">
@@ -19,28 +20,24 @@ function cardFormHTML(card = {}, defaultDeckId = '') {
 				<span>Verso do card</span>
 				<textarea class="textarea" name="back" required placeholder="Resposta ou explicação...">${escapeHTML(card.back ?? '')}</textarea>
 			</label>
-			<label class="field">
+			<label class="field field--full">
 				<span>Baralho</span>
 				<select class="select" name="deckId" required>${deckOptions}</select>
-			</label>
-			<label class="field">
-				<span>Dificuldade inicial</span>
-				<select class="select" name="difficulty">
-					<option value="${DIFFICULTIES.NEW}" ${card.difficulty === 'new' ? 'selected' : ''}>Novo</option>
-					<option value="${DIFFICULTIES.EASY}" ${card.difficulty === 'easy' ? 'selected' : ''}>Fácil</option>
-					<option value="${DIFFICULTIES.MEDIUM}" ${card.difficulty === 'medium' ? 'selected' : ''}>Médio</option>
-					<option value="${DIFFICULTIES.HARD}" ${card.difficulty === 'hard' ? 'selected' : ''}>Difícil</option>
-				</select>
 			</label>
 			<label class="field field--full">
 				<span>Tags</span>
 				<input class="input" name="tags" value="${escapeHTML((card.tags ?? []).join(', '))}" placeholder="matemática, probabilidade, prova" />
 				<small>Separe as tags por vírgulas.</small>
 			</label>
+			${isNewCard ? `
+				<div class="form-status-note field--full" role="note">
+					<span class="form-status-note__icon" aria-hidden="true">✦</span>
+					<div><strong>Situação inicial: Novo</strong><small>A dificuldade será definida pelo seu desempenho nas revisões programadas.</small></div>
+				</div>
+			` : ''}
 		</div>
 	`;
 }
-
 export async function promptCreateCard(defaultDeckId = '') {
 	if (getState().decks.length === 0) {
 		showToast('Crie um baralho antes de adicionar flashcards.', 'warning');
@@ -52,6 +49,7 @@ export async function promptCreateCard(defaultDeckId = '') {
 		icon: '＋',
 		bodyHTML: cardFormHTML({}, defaultDeckId || getState().decks[0].id),
 		confirmText: 'Salvar flashcard',
+		protectUnsaved: true,
 		validate: (values) => validateCard(values, getState().decks)
 	});
 	if (!result.confirmed) return null;
@@ -69,6 +67,7 @@ export async function promptEditCard(cardId) {
 		icon: '✏️',
 		bodyHTML: cardFormHTML(card),
 		confirmText: 'Salvar alterações',
+		protectUnsaved: true,
 		validate: (values) => validateCard(values, getState().decks)
 	});
 	if (!result.confirmed) return false;

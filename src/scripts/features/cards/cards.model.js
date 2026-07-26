@@ -32,7 +32,7 @@ export function createCard(data) {
 		front: data.front.trim(),
 		back: data.back.trim(),
 		tags: parseTags(data.tags),
-		difficulty: data.difficulty || 'new',
+		difficulty: 'new',
 		createdAt: Date.now(),
 		updatedAt: Date.now(),
 		reviewCount: 0,
@@ -52,7 +52,6 @@ export function updateCard(cardId, data) {
 		card.front = data.front.trim();
 		card.back = data.back.trim();
 		card.tags = parseTags(data.tags);
-		card.difficulty = data.difficulty || card.difficulty;
 		card.updatedAt = Date.now();
 	}, 'card:update');
 }

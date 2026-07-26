@@ -14,7 +14,12 @@
 	backdrop-filter: blur(8px);
 }
 
+.app-dialog[data-dialog-type='form'] {
+	width: min(94vw, 760px);
+}
+
 .dialog-card {
+	position: relative;
 	max-height: min(88vh, 820px);
 	display: flex;
 	flex-direction: column;
@@ -89,4 +94,62 @@
 @keyframes dialog-enter {
 	from { opacity: 0; transform: translateY(10px) scale(0.985); }
 	to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+
+.dialog-discard-guard {
+	position: absolute;
+	inset: 0;
+	z-index: 5;
+	display: grid;
+	place-items: center;
+	padding: 1.25rem;
+	border-radius: inherit;
+	background: color-mix(in srgb, var(--overlay) 86%, transparent);
+	backdrop-filter: blur(6px);
+}
+
+.dialog-discard-guard[hidden] {
+	display: none;
+}
+
+.dialog-discard-guard__panel {
+	width: min(100%, 440px);
+	display: grid;
+	gap: 1rem;
+	padding: 1.25rem;
+	border: 1px solid var(--border-strong);
+	border-radius: var(--radius-lg);
+	background: var(--surface-elevated);
+	box-shadow: var(--shadow-lg);
+}
+
+.dialog-discard-guard__icon {
+	width: 48px;
+	height: 48px;
+	display: grid;
+	place-items: center;
+	border-radius: 15px;
+	background: var(--warning-soft);
+	font-size: 1.25rem;
+}
+
+.dialog-discard-guard__copy {
+	display: grid;
+	gap: 0.35rem;
+}
+
+.dialog-discard-guard__copy h3 {
+	font-size: 1.3rem;
+}
+
+.dialog-discard-guard__copy p {
+	color: var(--text-secondary);
+	line-height: 1.5;
+}
+
+.dialog-discard-guard__actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.65rem;
 }

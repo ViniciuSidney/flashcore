@@ -287,3 +287,41 @@
 	outline: 3px solid var(--focus-ring);
 	outline-offset: 2px;
 }
+
+
+.form-status-note {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	padding: var(--space-sm) var(--space-md);
+	border: 1px solid color-mix(in srgb, var(--primary) 26%, var(--border));
+	border-radius: var(--radius-md);
+	background: color-mix(in srgb, var(--primary) 8%, var(--surface));
+}
+
+.form-status-note__icon {
+	width: 38px;
+	height: 38px;
+	display: grid;
+	place-items: center;
+	flex: 0 0 38px;
+	border-radius: var(--radius-sm);
+	background: var(--primary-soft);
+	color: var(--primary);
+	font-weight: var(--weight-bold);
+}
+
+.form-status-note div {
+	display: grid;
+	gap: 0.2rem;
+	min-width: 0;
+}
+
+.form-status-note strong {
+	color: var(--text-primary);
+}
+
+.form-status-note small {
+	color: var(--text-muted);
+	line-height: 1.4;
+}

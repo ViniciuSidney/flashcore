@@ -1,7 +1,7 @@
 import {DECK_COLORS, DECK_ICONS} from '../../core/constants.js';
 import {getState} from '../../core/state.js';
 import {escapeHTML} from '../../shared/helpers.js';
-import {openConfirm, openForm} from '../../shared/modal.js';
+import {openConfirm, openForm} from '../../shared/modal.js?v=0.1.1';
 import {showToast} from '../../shared/toast.js';
 import {validateDeckName} from '../../shared/validators.js';
 import {createDeck, deleteDeck, getDeckById, getDeckStats, updateDeck} from './decks.model.js';
@@ -38,6 +38,7 @@ export async function promptCreateDeck() {
 		icon: '📚',
 		bodyHTML: deckFormHTML({color: DECK_COLORS[0], icon: DECK_ICONS[0]}),
 		confirmText: 'Criar baralho',
+		protectUnsaved: true,
 		validate: (values) => validateDeckName(values.name, getState().decks)
 	});
 	if (!result.confirmed) return null;
@@ -55,6 +56,7 @@ export async function promptEditDeck(deckId) {
 		icon: deck.icon,
 		bodyHTML: deckFormHTML(deck),
 		confirmText: 'Salvar alterações',
+		protectUnsaved: true,
 		validate: (values) => validateDeckName(values.name, getState().decks, deckId)
 	});
 	if (!result.confirmed) return false;
