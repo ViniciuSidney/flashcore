@@ -12,7 +12,7 @@ import {renderDeckDetail} from './features/cards/cards.ui.js?v=0.1.1';
 import {confirmDeleteCard, promptCreateCard, promptEditCard, promptMoveCard} from './features/cards/cards.controller.js?v=0.1.1';
 import {renderReport, renderReview} from './features/review/review.ui.js?v=0.1.4';
 import {discardSession, finishSession, getActiveSession, gradeCurrentCard, revealAnswer, startSession} from './features/review/review.service.js';
-import {buildImportPreview, finalizeImport, getImportDraft, goToImportStep, loadCSVFile, prepareImport, renderImport, resetImport, setImportValue} from './features/importer/importer.controller.js';
+import {buildImportPreview, finalizeImport, getImportDraft, goToImportStep, hasImportDraftContent, loadCSVFile, prepareImport, renderImport, resetImport, setImportValue} from './features/importer/importer.controller.js?v=0.1.1';
 import {applyTheme, changeReviewLimit, changeReviewScale, changeShowIntervals, changeTheme, confirmDeleteAllData, cycleTheme, renderSettings} from './features/settings/settings.controller.js';
 
 const appView = document.querySelector('#appView');
@@ -165,6 +165,13 @@ function bindGlobalEvents() {
 }
 
 async function handleClick(event) {
+	const routeLink = event.target.closest('a[href^="#"]');
+	if (routeLink && currentRoute.name === ROUTES.IMPORT && hasImportDraftContent() && routeLink.getAttribute('href') !== '#import') {
+		event.preventDefault();
+		const confirmation = await confirmDiscardImport();
+		if (confirmation) window.location.hash = routeLink.getAttribute('href');
+		return;
+	}
 	const clickedMenu = event.target.closest('.action-menu');
 	document.querySelectorAll('.action-menu[open]').forEach((menu) => {
 		if (menu !== clickedMenu) menu.removeAttribute('open');
@@ -294,6 +301,9 @@ async function handleClick(event) {
 			resetImport(deckId);
 			navigate(ROUTES.IMPORT);
 			break;
+		case 'cancel-import':
+			if (await confirmDiscardImport()) navigate(ROUTES.DECKS);
+			break;
 		case 'import-next':
 			if (!getImportDraft().deckId) return showToast('Escolha um baralho de destino.', 'warning');
 			goToImportStep(2);
@@ -334,6 +344,24 @@ async function handleClick(event) {
 			cycleTheme();
 			break;
 	}
+}
+
+async function confirmDiscardImport() {
+	if (!hasImportDraftContent()) {
+		resetImport();
+		return true;
+	}
+	const confirmation = await openConfirm({
+		title: 'Descartar importação?',
+		eyebrow: 'Conteúdo não importado',
+		icon: '⚠️',
+		message: 'O conteúdo carregado, a prévia e as escolhas desta importação serão perdidos.',
+		confirmText: 'Descartar importação',
+		variant: 'warning'
+	});
+	if (!confirmation.confirmed) return false;
+	resetImport();
+	return true;
 }
 
 function launchReview(options) {

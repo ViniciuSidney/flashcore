@@ -82,7 +82,9 @@ export function analyzeRecords(deckId, records) {
 	return records.map((record) => {
 		const front = String(record.front ?? '').trim();
 		const back = String(record.back ?? '').trim();
-		if (!front || !back) return {...record, front, back, status: 'invalid', message: 'Frente ou verso ausente'};
+		if (!front && !back) return {...record, front, back, tags: parseTags(record.tags), status: 'invalid', message: 'Frente e verso ausentes'};
+		if (!front) return {...record, front, back, tags: parseTags(record.tags), status: 'invalid', message: 'Frente ausente'};
+		if (!back) return {...record, front, back, tags: parseTags(record.tags), status: 'invalid', message: 'Verso ausente'};
 		const duplicate = isDuplicateCard(deckId, {front, back}, accepted);
 		const analyzed = {...record, front, back, tags: parseTags(record.tags), status: duplicate ? 'duplicate' : 'valid', message: duplicate ? 'Possível duplicata' : 'Pronto para importar'};
 		if (!duplicate) accepted.push(analyzed);
