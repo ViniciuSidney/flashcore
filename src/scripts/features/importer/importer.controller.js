@@ -151,6 +151,11 @@ function renderStepThree() {
 	const duplicates = draft.records.filter((record) => record.status === 'duplicate').length;
 	const invalid = draft.records.filter((record) => record.status === 'invalid').length;
 	const importable = valid + (draft.duplicatePolicy === 'keep' ? duplicates : 0);
+	const skippableDuplicates = draft.duplicatePolicy === 'skip' ? duplicates : 0;
+	const canFinish = importable > 0 || skippableDuplicates > 0;
+	const finishLabel = importable > 0
+		? `Importar ${importable} flashcard(s)`
+		: `Concluir e ignorar ${skippableDuplicates} duplicata(s)`;
 	return `
 		<div class="wizard-content">
 			<div><span class="eyebrow">Etapa 3</span><h2>Confira antes de importar</h2><p class="text-muted">Revise cada registro, corrija problemas e decida como tratar possíveis duplicatas.</p></div>
@@ -168,7 +173,7 @@ function renderStepThree() {
 				<label class="choice-card"><input type="radio" name="duplicatePolicy" value="keep" ${draft.duplicatePolicy === 'keep' ? 'checked' : ''} /><span><strong>Manter duplicatas</strong><small>Importar mesmo assim</small></span></label>
 			</div></div>
 		</div>
-		<div class="wizard-actions wizard-actions--three">${cancelButton()}<button class="button button--secondary" type="button" data-action="import-back">Voltar e corrigir</button><button class="button button--primary" type="button" data-action="import-finish" ${importable === 0 ? 'disabled' : ''}>Importar ${importable} flashcard(s)</button></div>
+		<div class="wizard-actions wizard-actions--three">${cancelButton()}<button class="button button--secondary" type="button" data-action="import-back">Voltar e corrigir</button><button class="button button--primary" type="button" data-action="import-finish" ${canFinish ? '' : 'disabled'}>${finishLabel}</button></div>
 	`;
 }
 

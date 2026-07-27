@@ -12,7 +12,7 @@ import {renderDeckDetail} from './features/cards/cards.ui.js?v=0.1.1';
 import {confirmDeleteCard, promptCreateCard, promptEditCard, promptMoveCard} from './features/cards/cards.controller.js?v=0.1.1';
 import {renderReport, renderReview} from './features/review/review.ui.js?v=0.1.4';
 import {discardSession, finishSession, getActiveSession, gradeCurrentCard, revealAnswer, startSession} from './features/review/review.service.js';
-import {buildImportPreview, finalizeImport, getImportDraft, goToImportStep, hasImportDraftContent, loadCSVFile, prepareImport, renderImport, resetImport, setImportValue} from './features/importer/importer.controller.js?v=0.1.1';
+import {buildImportPreview, finalizeImport, getImportDraft, goToImportStep, hasImportDraftContent, loadCSVFile, prepareImport, renderImport, resetImport, setImportValue} from './features/importer/importer.controller.js?v=0.1.2';
 import {applyTheme, changeReviewLimit, changeReviewScale, changeShowIntervals, changeTheme, confirmDeleteAllData, cycleTheme, renderSettings} from './features/settings/settings.controller.js';
 
 const appView = document.querySelector('#appView');

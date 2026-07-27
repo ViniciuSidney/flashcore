@@ -122,14 +122,43 @@
 }
 
 @media (max-width: 620px) {
+	.review-topbar {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		align-items: stretch;
+		gap: 0.65rem;
+	}
+
+	.review-progress {
+		width: 100%;
+		min-width: 0;
+	}
+
+	.review-progress .flashcard-detail__meta {
+		min-width: 0;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.4rem 0.55rem;
+	}
+
+	.review-progress .flashcard-detail__meta .text-muted {
+		margin-left: auto;
+		white-space: nowrap;
+	}
+
 	.review-topbar__actions {
 		width: 100%;
+		min-width: 0;
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(7rem, auto);
+		grid-template-columns: minmax(0, 1fr) minmax(6.75rem, auto);
+		gap: 0.6rem;
 	}
 
 	.review-scale-control {
 		width: 100%;
+		min-width: 0;
+		grid-template-columns: 2.15rem minmax(3.2rem, 1fr) 2.15rem;
 	}
 
 	.review-topbar__actions .button {
@@ -287,6 +316,24 @@ body.is-reviewing .app-view {
 }
 
 @media (max-width: 420px) {
+	body.is-reviewing .app-view {
+		padding: 0.6rem;
+	}
+
+	.review-progress .flashcard-detail__meta .text-muted {
+		width: 100%;
+		margin-left: 0;
+		text-align: right;
+	}
+
+	.review-topbar__actions {
+		grid-template-columns: minmax(0, 1fr) auto;
+	}
+
+	.review-topbar__actions .button {
+		min-width: 6.5rem;
+	}
+
 	.app-header__title {
 		min-width: 0;
 	}

@@ -1,4 +1,4 @@
-import {initApp} from './app.js?v=0.1.7';
+import {initApp} from './app.js?v=0.1.8';
 
 let appInitialized = false;
 
