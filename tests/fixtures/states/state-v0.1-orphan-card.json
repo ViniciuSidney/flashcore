@@ -1,0 +1,40 @@
+﻿{
+  "schemaVersion": 1,
+  "createdAt": 1700000000000,
+  "updatedAt": 1700001000000,
+  "settings": {
+    "theme": "system",
+    "reviewLimit": 30,
+    "showIntervals": true,
+    "reviewScale": 100
+  },
+  "decks": [
+    {
+      "id": "deck-existente",
+      "name": "Baralho existente",
+      "description": "",
+      "color": "#2563eb",
+      "icon": "📘",
+      "createdAt": 1700000000000,
+      "updatedAt": 1700000000000,
+      "lastOpenedAt": 0
+    }
+  ],
+  "cards": [
+    {
+      "id": "card-orfao",
+      "deckId": "deck-inexistente",
+      "front": "Este card não possui baralho válido",
+      "back": "Card órfão",
+      "tags": ["inválido"],
+      "difficulty": "new",
+      "createdAt": 1700000200000,
+      "updatedAt": 1700000200000,
+      "reviewCount": 0,
+      "correctStreak": 0,
+      "lastReviewedAt": 0,
+      "nextReviewAt": 1700000200000
+    }
+  ],
+  "sessions": []
+}

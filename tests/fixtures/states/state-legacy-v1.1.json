@@ -1,0 +1,28 @@
+﻿{
+  "settings": {
+    "theme": "dark",
+    "reviewLimit": 20,
+    "showIntervals": false
+  },
+  "decks": [
+    {
+      "id": "legacy-deck-001",
+      "name": "Conteúdo legado",
+      "description": "Dados da chave flashcore.v1.1",
+      "color": "#2563eb",
+      "icon": "📘",
+      "createdAt": 1690000000000
+    }
+  ],
+  "cards": [
+    {
+      "id": "legacy-card-001",
+      "deckId": "legacy-deck-001",
+      "front": "Qual é a chave legada?",
+      "back": "flashcore.v1.1",
+      "tags": "legado, migração",
+      "difficulty": "new",
+      "createdAt": 1690000100000
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+﻿{
+  "schemaVersion": 1,
+  "createdAt": 1700000000000,
+  "updatedAt": 1700003600000,
+  "settings": {
+    "theme": "system",
+    "reviewLimit": 30,
+    "showIntervals": true,
+    "reviewScale": 100
+  },
+  "decks": [
+    {
+      "id": "deck-matematica",
+      "name": "Matemática",
+      "description": "Conceitos fundamentais",
+      "color": "#2563eb",
+      "icon": "🧮",
+      "createdAt": 1700000000000,
+      "updatedAt": 1700001000000,
+      "lastOpenedAt": 1700002000000
+    },
+    {
+      "id": "deck-programacao",
+      "name": "Programação",
+      "description": "Fundamentos de desenvolvimento web",
+      "color": "#0284c7",
+      "icon": "💻",
+      "createdAt": 1700000100000,
+      "updatedAt": 1700001100000,
+      "lastOpenedAt": 0
+    }
+  ],
+  "cards": [
+    {
+      "id": "card-mat-001",
+      "deckId": "deck-matematica",
+      "front": "Qual é a fórmula da área do círculo?",
+      "back": "A = πr²",
+      "tags": ["geometria", "área"],
+      "difficulty": "medium",
+      "createdAt": 1700000200000,
+      "updatedAt": 1700003000000,
+      "reviewCount": 2,
+      "correctStreak": 1,
+      "lastReviewedAt": 1700003000000,
+      "nextReviewAt": 1700175800000
+    },
+    {
+      "id": "card-mat-002",
+      "deckId": "deck-matematica",
+      "front": "Quanto é 7 × 8?",
+      "back": "56",
+      "tags": ["aritmética"],
+      "difficulty": "easy",
+      "createdAt": 1700000300000,
+      "updatedAt": 1700003100000,
+      "reviewCount": 3,
+      "correctStreak": 3,
+      "lastReviewedAt": 1700003100000,
+      "nextReviewAt": 1700348700000
+    },
+    {
+      "id": "card-prog-001",
+      "deckId": "deck-programacao",
+      "front": "O que significa HTML?",
+      "back": "HyperText Markup Language",
+      "tags": ["html", "web"],
+      "difficulty": "new",
+      "createdAt": 1700000400000,
+      "updatedAt": 1700000400000,
+      "reviewCount": 0,
+      "correctStreak": 0,
+      "lastReviewedAt": 0,
+      "nextReviewAt": 1700000400000
+    }
+  ],
+  "sessions": [
+    {
+      "id": "session-001",
+      "mode": "scheduled",
+      "preserveSchedule": false,
+      "deckId": "deck-matematica",
+      "cardIds": [
+        "card-mat-001",
+        "card-mat-002"
+      ],
+      "currentIndex": 2,
+      "results": [
+        {
+          "cardId": "card-mat-001",
+          "grade": "good",
+          "answeredAt": 1700003000000,
+          "nextReviewAt": 1700175800000,
+          "schedulePreserved": false
+        },
+        {
+          "cardId": "card-mat-002",
+          "grade": "easy",
+          "answeredAt": 1700003100000,
+          "nextReviewAt": 1700348700000,
+          "schedulePreserved": false
+        }
+      ],
+      "startedAt": 1700002900000,
+      "endedAt": 1700003200000,
+      "durationMs": 300000,
+      "completed": true,
+      "total": 2,
+      "answered": 2
+    }
+  ]
+}

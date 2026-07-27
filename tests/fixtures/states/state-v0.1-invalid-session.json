@@ -1,0 +1,56 @@
+﻿{
+  "schemaVersion": 1,
+  "createdAt": 1700000000000,
+  "updatedAt": 1700003000000,
+  "settings": {
+    "theme": "system",
+    "reviewLimit": 30,
+    "showIntervals": true,
+    "reviewScale": 100
+  },
+  "decks": [
+    {
+      "id": "deck-001",
+      "name": "Baralho",
+      "description": "",
+      "color": "#2563eb",
+      "icon": "📘",
+      "createdAt": 1700000000000,
+      "updatedAt": 1700000000000,
+      "lastOpenedAt": 0
+    }
+  ],
+  "cards": [
+    {
+      "id": "card-001",
+      "deckId": "deck-001",
+      "front": "Frente",
+      "back": "Verso",
+      "tags": [],
+      "difficulty": "new",
+      "createdAt": 1700000100000,
+      "updatedAt": 1700000100000,
+      "reviewCount": 0,
+      "correctStreak": 0,
+      "lastReviewedAt": 0,
+      "nextReviewAt": 1700000100000
+    }
+  ],
+  "sessions": [
+    {
+      "id": "session-invalid",
+      "mode": "scheduled",
+      "preserveSchedule": false,
+      "deckId": "deck-001",
+      "cardIds": ["card-001"],
+      "currentIndex": 2,
+      "results": "resultado não é uma lista",
+      "startedAt": 1700002000000,
+      "endedAt": 1700001000000,
+      "durationMs": -1000,
+      "completed": true,
+      "total": 1,
+      "answered": 2
+    }
+  ]
+}

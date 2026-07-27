@@ -1,0 +1,14 @@
+﻿{
+  "schemaVersion": 1,
+  "createdAt": 1700000000000,
+  "updatedAt": 1700000000000,
+  "settings": {
+    "theme": "system",
+    "reviewLimit": 30,
+    "showIntervals": true,
+    "reviewScale": 100
+  },
+  "decks": [],
+  "cards": [],
+  "sessions": []
+}

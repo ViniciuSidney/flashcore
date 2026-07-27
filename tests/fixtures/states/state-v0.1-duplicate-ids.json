@@ -1,0 +1,64 @@
+﻿{
+  "schemaVersion": 1,
+  "createdAt": 1700000000000,
+  "updatedAt": 1700001000000,
+  "settings": {
+    "theme": "system",
+    "reviewLimit": 30,
+    "showIntervals": true,
+    "reviewScale": 100
+  },
+  "decks": [
+    {
+      "id": "deck-duplicado",
+      "name": "Primeiro baralho",
+      "description": "",
+      "color": "#2563eb",
+      "icon": "📘",
+      "createdAt": 1700000000000,
+      "updatedAt": 1700000000000,
+      "lastOpenedAt": 0
+    },
+    {
+      "id": "deck-duplicado",
+      "name": "Segundo baralho",
+      "description": "",
+      "color": "#0284c7",
+      "icon": "🧠",
+      "createdAt": 1700000100000,
+      "updatedAt": 1700000100000,
+      "lastOpenedAt": 0
+    }
+  ],
+  "cards": [
+    {
+      "id": "card-duplicado",
+      "deckId": "deck-duplicado",
+      "front": "Primeira frente",
+      "back": "Primeiro verso",
+      "tags": [],
+      "difficulty": "new",
+      "createdAt": 1700000200000,
+      "updatedAt": 1700000200000,
+      "reviewCount": 0,
+      "correctStreak": 0,
+      "lastReviewedAt": 0,
+      "nextReviewAt": 1700000200000
+    },
+    {
+      "id": "card-duplicado",
+      "deckId": "deck-duplicado",
+      "front": "Segunda frente",
+      "back": "Segundo verso",
+      "tags": [],
+      "difficulty": "new",
+      "createdAt": 1700000300000,
+      "updatedAt": 1700000300000,
+      "reviewCount": 0,
+      "correctStreak": 0,
+      "lastReviewedAt": 0,
+      "nextReviewAt": 1700000300000
+    }
+  ],
+  "sessions": []
+}

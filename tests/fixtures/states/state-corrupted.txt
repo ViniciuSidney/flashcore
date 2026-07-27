@@ -1,0 +1,6 @@
+﻿{
+  "schemaVersion": 1,
+  "settings": {
+    "theme": "system"
+  },
+  "decks": [
