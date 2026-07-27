@@ -2,7 +2,7 @@ import {APP_CONFIG} from '../../core/config.js';
 import {THEMES} from '../../core/constants.js';
 import {getState, mutateState, resetState} from '../../core/state.js';
 import {escapeHTML} from '../../shared/helpers.js';
-import {openConfirm, openForm} from '../../shared/modal.js';
+import {openConfirm, openForm} from '../../shared/modal.js?v=0.1.1';
 import {showToast} from '../../shared/toast.js';
 
 export function applyTheme(theme = getState().settings.theme) {
