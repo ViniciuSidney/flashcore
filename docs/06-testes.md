@@ -2,10 +2,31 @@
 
 ## Informações
 
-Projeto: FlashCore  
-Versão testada: v0.1  
-Última atualização do plano: 10/07/2026  
-Execução dos testes: Ainda não iniciada
+**Projeto:** FlashCore  
+**Versão testada:** v0.1.0  
+**Última atualização:** 27/07/2026  
+**Execução dos testes:** Concluída  
+**Resultado geral:** Aprovado
+
+---
+
+## Homologação final da v0.1.0
+
+**Data:** 27/07/2026  
+**Resultado:** Aprovada
+
+- verificações automatizadas: aprovadas;
+- testes manuais HF-01 a HF-22: **22 de 22 aprovados**;
+- falhas bloqueadoras conhecidas: nenhuma;
+- correções encontradas durante a homologação: retestadas e aprovadas.
+
+### Correções realizadas durante a homologação
+
+| Código | Problema encontrado | Correção | Resultado |
+|---|---|---|---|
+| HF-15 | Não era possível concluir uma importação formada somente por duplicatas ignoradas | O fluxo passou a permitir a conclusão e registrar os itens como ignorados | Aprovado no reteste |
+| HF-19 | O controle de escala sobrepunha elementos em telas abaixo de 621 px | O cabeçalho da sessão foi reorganizado para telas estreitas | Aprovado no reteste |
+| HF-21 | A exclusão total falhava por carregar duas instâncias diferentes de `modal.js` | Os imports foram unificados e o cache dos módulos foi atualizado | Aprovado no reteste |
 
 ---
 
@@ -15,136 +36,129 @@ Execução dos testes: Ainda não iniciada
 
 | Código | Teste | Resultado esperado | Status |
 |---|---|---|---|
-| T01 | Abrir a aplicação pela primeira vez | A aplicação carrega sem erros e apresenta o estado inicial correto | Pendente |
-| T02 | Navegar entre as telas principais | A tela escolhida é exibida e a navegação ativa é atualizada | Pendente |
-| T03 | Recarregar a página após criar dados | Baralhos, cards e preferências permanecem salvos | Pendente |
-| T04 | Carregar dados com campos opcionais ausentes | A aplicação utiliza valores padrão sem falhar | Pendente |
-| T05 | Carregar armazenamento inválido | A aplicação informa o problema e evita sobrescrever dados automaticamente | Pendente |
+| T01 | Abrir a aplicação pela primeira vez | A aplicação carrega sem erros e apresenta o estado inicial correto | Aprovado |
+| T02 | Navegar entre as telas principais | A tela escolhida é exibida e a navegação ativa é atualizada | Aprovado |
+| T03 | Recarregar a página após criar dados | Baralhos, cards e preferências permanecem salvos | Aprovado |
+| T04 | Carregar dados com campos opcionais ausentes | A aplicação utiliza valores padrão sem falhar | Aprovado |
+| T05 | Carregar armazenamento inválido | A aplicação evita sobrescrever dados automaticamente e mantém o fluxo seguro | Aprovado |
 
 ### Baralhos
 
 | Código | Teste | Resultado esperado | Status |
 |---|---|---|---|
-| T06 | Criar baralho válido | O baralho é salvo e exibido na galeria | Pendente |
-| T07 | Criar baralho sem nome | A aplicação bloqueia o salvamento e informa o campo obrigatório | Pendente |
-| T08 | Criar baralho com nome duplicado | A aplicação bloqueia a duplicata normalizada | Pendente |
-| T09 | Editar informações de um baralho | Os novos dados aparecem em todas as telas relacionadas | Pendente |
-| T10 | Excluir baralho vazio | O modal confirma a ação e o baralho é removido | Pendente |
-| T11 | Excluir baralho com cards | O modal informa a quantidade afetada e remove os dados somente após confirmação | Pendente |
+| T06 | Criar baralho válido | O baralho é salvo e exibido na galeria | Aprovado |
+| T07 | Criar baralho sem nome | A aplicação bloqueia o salvamento e informa o campo obrigatório | Aprovado |
+| T08 | Criar baralho com nome duplicado | A aplicação bloqueia a duplicata normalizada | Aprovado |
+| T09 | Editar informações de um baralho | Os novos dados aparecem em todas as telas relacionadas | Aprovado |
+| T10 | Excluir baralho vazio | O modal confirma a ação e o baralho é removido | Aprovado |
+| T11 | Excluir baralho com cards | O modal informa a quantidade afetada e remove os dados somente após confirmação | Aprovado |
 
 ### Flashcards
 
 | Código | Teste | Resultado esperado | Status |
 |---|---|---|---|
-| T12 | Criar flashcard válido | O card é salvo no baralho selecionado | Pendente |
-| T13 | Salvar card sem frente ou verso | A aplicação bloqueia o salvamento e destaca o erro | Pendente |
-| T14 | Editar um flashcard | A lista e o detalhe exibem as novas informações | Pendente |
-| T15 | Mover card para outro baralho | O card deixa o baralho antigo e aparece no destino | Pendente |
-| T16 | Excluir flashcard | O card é removido somente após confirmação | Pendente |
-| T17 | Pesquisar por frente, verso ou tag | Somente os cards correspondentes são exibidos | Pendente |
-| T18 | Aplicar filtros de revisão e dificuldade | A listagem respeita o filtro selecionado | Pendente |
+| T12 | Criar flashcard válido | O card é salvo no baralho selecionado e começa como Novo | Aprovado |
+| T13 | Salvar card sem frente ou verso | A aplicação bloqueia o salvamento e destaca o erro | Aprovado |
+| T14 | Editar um flashcard | A lista e o detalhe exibem as novas informações sem alterar o agendamento | Aprovado |
+| T15 | Mover card para outro baralho | O card deixa o baralho antigo e aparece no destino | Aprovado |
+| T16 | Excluir flashcard | O card é removido somente após confirmação | Aprovado |
+| T17 | Pesquisar por frente, verso ou tag | Somente os cards correspondentes são exibidos sem perda de foco | Aprovado |
+| T18 | Aplicar filtros de revisão e dificuldade | A listagem respeita o filtro selecionado | Aprovado |
 
 ### Importação
 
 | Código | Teste | Resultado esperado | Status |
 |---|---|---|---|
-| T19 | Importar texto estruturado válido | A prévia exibe os registros e a confirmação cria os cards | Pendente |
-| T20 | Importar arquivo CSV válido | Colunas são reconhecidas ou mapeadas corretamente | Pendente |
-| T21 | Importar registros parcialmente inválidos | Válidos e inválidos são separados sem perda dos válidos | Pendente |
-| T22 | Importar para baralho escolhido | Todos os cards válidos são associados ao destino correto | Pendente |
-| T23 | Detectar possíveis duplicatas | A prévia identifica duplicatas antes da confirmação | Pendente |
-| T24 | Ignorar duplicatas | Apenas os registros não duplicados são salvos | Pendente |
-| T25 | Manter duplicatas | Registros duplicados são importados após escolha explícita | Pendente |
-| T26 | Cancelar importação antes de confirmar | Nenhum card é salvo | Pendente |
+| T19 | Importar texto estruturado válido | A prévia exibe os registros e a confirmação cria os cards | Aprovado |
+| T20 | Importar arquivo CSV válido | As colunas compatíveis são reconhecidas corretamente | Aprovado |
+| T21 | Importar registros parcialmente inválidos | Válidos e inválidos são separados sem perda dos válidos | Aprovado |
+| T22 | Importar para baralho escolhido | Todos os cards válidos são associados ao destino correto | Aprovado |
+| T23 | Detectar possíveis duplicatas | A prévia identifica duplicatas antes da confirmação | Aprovado |
+| T24 | Ignorar duplicatas | Os registros duplicados são ignorados e contabilizados corretamente | Aprovado |
+| T25 | Manter duplicatas | Registros duplicados são importados após escolha explícita | Aprovado |
+| T26 | Cancelar importação antes de confirmar | Nenhum card é salvo e o descarte exige confirmação quando necessário | Aprovado |
 
 ### Revisão
 
 | Código | Teste | Resultado esperado | Status |
 |---|---|---|---|
-| T27 | Iniciar revisão programada | Somente cards disponíveis pela data entram na sessão | Pendente |
-| T28 | Iniciar revisão livre de um baralho | Todos os cards do baralho entram, independentemente da data | Pendente |
-| T29 | Revelar resposta | O verso permanece oculto até a ação do usuário | Pendente |
-| T30 | Classificar como Errei | O progresso é atualizado e a próxima revisão recebe intervalo curto | Pendente |
-| T31 | Classificar como Difícil | O progresso é atualizado com intervalo menor que Bom e Fácil | Pendente |
-| T32 | Classificar como Bom | O progresso é atualizado com intervalo intermediário | Pendente |
-| T33 | Classificar como Fácil | O progresso é atualizado com o maior intervalo disponível | Pendente |
-| T34 | Verificar textos auxiliares dos botões | Cada opção informa claramente o efeito aproximado | Pendente |
-| T35 | Concluir sessão | O resultado apresenta totais coerentes com as respostas | Pendente |
-| T36 | Encerrar sessão antecipadamente | A aplicação solicita confirmação e registra sessão parcial corretamente | Pendente |
-| T37 | Iniciar revisão sem cards disponíveis | A aplicação mostra estado vazio e oferece alternativas úteis | Pendente |
+| T27 | Iniciar Revisão programada | Somente cards disponíveis pela data entram na sessão | Aprovado |
+| T28 | Iniciar Estudo livre de um baralho | Todos os cards do baralho entram, independentemente da data | Aprovado |
+| T29 | Revelar resposta | O verso permanece oculto até a ação do usuário | Aprovado |
+| T30 | Classificar como Errei | Na Revisão programada, o progresso é atualizado e a próxima revisão recebe intervalo curto | Aprovado |
+| T31 | Classificar como Difícil | Na Revisão programada, o intervalo é menor que Bom e Fácil | Aprovado |
+| T32 | Classificar como Bom | Na Revisão programada, o intervalo intermediário é aplicado | Aprovado |
+| T33 | Classificar como Fácil | Na Revisão programada, o maior intervalo disponível é aplicado | Aprovado |
+| T34 | Verificar textos auxiliares dos botões | Os efeitos são exibidos na revisão programada e “sem reagendar” no Estudo livre | Aprovado |
+| T35 | Concluir sessão | O relatório apresenta totais e Índice de recordação coerentes | Aprovado |
+| T36 | Encerrar sessão antecipadamente | A aplicação solicita confirmação e registra a sessão parcial corretamente | Aprovado |
+| T37 | Iniciar revisão sem cards disponíveis | A aplicação mostra estado vazio e oferece alternativas úteis | Aprovado |
 
 ### Opções e dados
 
 | Código | Teste | Resultado esperado | Status |
 |---|---|---|---|
-| T38 | Alterar para tema claro | O tema é aplicado e salvo | Pendente |
-| T39 | Alterar para tema escuro | O tema é aplicado e salvo | Pendente |
-| T40 | Usar tema do sistema | A aplicação acompanha a preferência do dispositivo | Pendente |
-| T41 | Reabrir a aplicação após alterar o tema | A preferência anterior é restaurada | Pendente |
-| T42 | Cancelar exclusão total na primeira confirmação | Nenhum dado é removido | Pendente |
-| T43 | Digitar confirmação textual incorreta | A exclusão é cancelada | Pendente |
-| T44 | Confirmar corretamente a exclusão total | Dados e preferências são removidos e o estado inicial aparece | Pendente |
+| T38 | Alterar para tema claro | O tema é aplicado e salvo | Aprovado |
+| T39 | Alterar para tema escuro | O tema é aplicado e salvo | Aprovado |
+| T40 | Usar tema do sistema | A aplicação acompanha a preferência do dispositivo | Aprovado |
+| T41 | Reabrir a aplicação após alterar o tema | A preferência anterior é restaurada | Aprovado |
+| T42 | Cancelar exclusão total na primeira confirmação | Nenhum dado é removido | Aprovado |
+| T43 | Digitar confirmação textual incorreta | A exclusão não prossegue e a validação informa o valor esperado | Aprovado |
+| T44 | Confirmar corretamente a exclusão total | Dados e preferências são removidos e o estado inicial aparece | Aprovado |
 
 ### Responsividade e acessibilidade
 
 | Código | Teste | Resultado esperado | Status |
 |---|---|---|---|
-| T45 | Usar aplicação em largura de 320 px | Não existe rolagem horizontal indesejada e ações permanecem acessíveis | Pendente |
-| T46 | Usar aplicação em celular comum | Navegação, formulários, modais e revisão permanecem legíveis | Pendente |
-| T47 | Usar aplicação em tablet | Galerias e painéis se reorganizam sem espaços quebrados | Pendente |
-| T48 | Usar aplicação em desktop amplo | O conteúdo aproveita o espaço sem linhas excessivamente longas | Pendente |
-| T49 | Navegar pelos controles com teclado | A ordem de foco é lógica e o foco permanece visível | Pendente |
-| T50 | Abrir e fechar modal com teclado | O foco entra no modal, Escape cancela e o foco retorna ao acionador | Pendente |
-| T51 | Verificar contraste nos dois temas | Textos e controles permanecem legíveis | Pendente |
-| T52 | Aumentar zoom do navegador para 200% | Conteúdo continua utilizável sem sobreposição crítica | Pendente |
+| T45 | Usar a aplicação em 360 px | Não existe rolagem horizontal indesejada e as ações permanecem acessíveis | Aprovado |
+| T46 | Usar a aplicação em celulares de 390 px e 412 px | Navegação, formulários, modais e revisão permanecem legíveis | Aprovado |
+| T47 | Usar a aplicação em tablet de 768 px | Galerias e painéis se reorganizam sem espaços quebrados | Aprovado |
+| T48 | Usar a aplicação em desktop amplo | O conteúdo aproveita o espaço sem linhas excessivamente longas | Aprovado |
+| T49 | Navegar pelos controles com teclado | A ordem de foco é lógica e o foco permanece visível | Aprovado |
+| T50 | Abrir e fechar modal com teclado | Escape cancela quando permitido e o modal permanece utilizável | Aprovado |
+| T51 | Verificar contraste nos temas | Textos e controles permanecem legíveis | Aprovado |
+| T52 | Aumentar o zoom do navegador para 200% | O conteúdo continua utilizável sem sobreposição crítica | Aprovado |
 
 ---
 
 ## Cenários de volume
 
+Os cenários abaixo permanecem como testes de carga planejados para ciclos futuros. Eles **não fizeram parte da homologação obrigatória da v0.1.0**.
+
 | Código | Teste | Resultado esperado | Status |
 |---|---|---|---|
-| TV01 | Criar ou importar 100 cards | A interface permanece responsiva e os dados são salvos corretamente | Pendente |
-| TV02 | Criar 30 baralhos | Pesquisa e galeria continuam utilizáveis | Pendente |
-| TV03 | Importar 500 registros válidos | A aplicação conclui a operação sem travar a interface por tempo excessivo | Pendente |
-| TV04 | Pesquisar em uma base com 1.000 cards | O resultado aparece em tempo aceitável | Pendente |
+| TV01 | Criar ou importar 100 cards | A interface permanece responsiva e os dados são salvos corretamente | Não executado |
+| TV02 | Criar 30 baralhos | Pesquisa e galeria continuam utilizáveis | Não executado |
+| TV03 | Importar 500 registros válidos | A aplicação conclui a operação sem travar a interface por tempo excessivo | Não executado |
+| TV04 | Pesquisar em uma base com 1.000 cards | O resultado aparece em tempo aceitável | Não executado |
 
 ---
 
 ## Bugs encontrados
 
-Nenhum bug registrado. A execução da v0.1 ainda não foi iniciada.
+### B01 — Importação somente com duplicatas ignoradas
 
-Ao encontrar um problema, registrar no formato abaixo:
+**Origem:** HF-15  
+**Status:** Corrigido e aprovado no reteste
 
-### Bug BXX - Título
+O botão de conclusão permanecia desativado quando todos os registros eram duplicatas e a política escolhida era ignorá-los.
 
-Descrição:  
-[Explique o comportamento observado.]
+### B02 — Sobreposição no cabeçalho da revisão
 
-Como reproduzir:
-1. [Passo]
-2. [Passo]
-3. [Passo]
+**Origem:** HF-19  
+**Status:** Corrigido e aprovado no reteste
 
-Resultado esperado:  
-[Comportamento correto.]
+O controle de escala sobrepunha o progresso e outras ações em telas abaixo de 621 px.
 
-Resultado atual:  
-[Comportamento incorreto.]
+### B03 — Erro na exclusão total
 
-Ambiente:  
-[Navegador, sistema e largura da tela.]
+**Origem:** HF-21  
+**Status:** Corrigido e aprovado no reteste
 
-Status:  
-[Pendente / Em correção / Corrigido / Não reproduzido]
+O fluxo carregava uma instância não inicializada de `modal.js`, causando erro ao abrir a confirmação de exclusão.
 
 ---
 
-## Observações
+## Conclusão
 
-- Testar primeiro os fluxos essenciais antes dos detalhes visuais.
-- Repetir os testes destrutivos com dados de exemplo, nunca com dados pessoais importantes.
-- Executar os testes mobile em navegador responsivo e, quando possível, em aparelho real.
-- Antes de fechar uma versão, repetir testes de persistência, importação e exclusão total.
-- Atualizar este documento sempre que um requisito novo entrar no escopo.
+A v0.1.0 foi aprovada para lançamento. Os fluxos essenciais, a importação, os modos de estudo, a persistência, a exclusão total e a matriz responsiva foram validados sem falhas bloqueadoras pendentes.

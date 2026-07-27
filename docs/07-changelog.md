@@ -3,54 +3,91 @@
 Todas as mudanças importantes deste projeto serão registradas aqui.
 
 O projeto utiliza versões semânticas adaptadas ao estágio de desenvolvimento:
-- `v0.x` para versões em construção e validação.
+
+- `v0.x` para versões em construção e validação;
 - `v1.0` para a primeira versão considerada estável.
 
 ---
 
-## [Não lançado]
-
-### Planejado
-
-- Refinamentos visuais após os primeiros testes de uso.
-- Ajustes de acessibilidade e responsividade encontrados durante a validação manual.
-- Evolução do algoritmo de revisão em versões futuras.
-
----
-
-## [0.1.0] - 10/07/2026
+## [0.1.0] - 2026-07-27
 
 ### Adicionado
 
-- Estrutura modular baseada no Modelo de Projeto.
-- Shell responsivo com barra lateral no desktop e navegação inferior no celular.
-- Tela inicial com resumo, revisões pendentes, baralhos recentes e ações rápidas.
-- Criação, edição e exclusão de baralhos.
-- Criação, edição, movimentação e exclusão de flashcards.
-- Galeria de baralhos com busca e ordenação.
-- Tela mestre-detalhe para os flashcards de cada baralho.
-- Pesquisa e filtros por situação de revisão.
-- Importação por texto estruturado e arquivo CSV.
-- Prévia, validação e detecção básica de duplicatas na importação.
-- Revisão programada e revisão livre por baralho.
-- Botões de avaliação com Errei, Difícil, Bom e Fácil.
-- Intervalos aproximados exibidos durante a revisão.
-- Relatório básico ao final da sessão.
-- Temas claro, escuro e preferência do sistema.
-- Preferências de limite da sessão e exibição dos intervalos.
-- Persistência local versionada com `localStorage`.
-- Migração básica dos dados do protótipo anterior armazenados em `flashcore.v1.1`.
-- Modais próprios, toasts e estados vazios orientativos.
-- Confirmação dupla para apagar todos os dados.
-- Documentação de visão, requisitos, fluxos, arquitetura, roadmap e testes.
+- estrutura modular baseada no Modelo de Projeto;
+- shell responsivo com barra lateral no desktop e navegação inferior no celular;
+- tela inicial com resumo, revisões pendentes, baralhos recentes e ações rápidas;
+- criação, edição e exclusão de baralhos;
+- criação, edição, movimentação e exclusão de flashcards;
+- galeria de baralhos com pesquisa e ordenação;
+- tela mestre-detalhe para os flashcards de cada baralho;
+- pesquisa e filtros por situação de revisão;
+- importação por texto estruturado e arquivo CSV;
+- prévia detalhada com linha, frente, verso, tags, status e motivo de erro;
+- detecção e tratamento de duplicatas na importação;
+- Revisão programada com atualização do cronograma;
+- Estudo livre por baralho sem alteração de datas, intervalos ou progresso programado;
+- classificação por Errei, Difícil, Bom e Fácil;
+- modo focado durante as sessões;
+- controle de escala da sessão em 100%, 125% e 150%;
+- relatório com Índice de recordação;
+- reforço de cards classificados como Errei ou Difícil;
+- temas claro, escuro e do sistema;
+- preferências de limite da sessão e exibição de intervalos;
+- persistência local versionada com `localStorage`;
+- migração básica dos dados do protótipo anterior armazenados em `flashcore.v1.1`;
+- modais próprios, toasts e estados vazios orientativos;
+- proteção contra descarte acidental de alterações não salvas;
+- confirmação dupla para apagar todos os dados;
+- documentação de visão, requisitos, fluxos, arquitetura, roadmap e testes.
 
 ### Alterado
 
-- O protótipo anterior passou a ser tratado como prova de conceito.
-- A aplicação foi reconstruída seguindo a organização do Modelo de Projeto.
-- A identidade visual passou a usar uma paleta azulada e componentes próximos das demais aplicações pessoais.
+- o protótipo anterior passou a ser tratado como prova de conceito;
+- a aplicação foi reconstruída seguindo a organização do Modelo de Projeto;
+- a identidade visual passou a usar uma paleta azulada alinhada às demais aplicações pessoais;
+- “Revisão livre” foi renomeada para **Estudo livre**;
+- o Estudo livre passou a preservar integralmente o cronograma;
+- a sessão de estudo passou a ocultar a navegação e o cabeçalho global;
+- o relatório passou a usar o termo **Índice de recordação**;
+- pesquisas passaram a preservar foco e posição do cursor;
+- ações secundárias e destrutivas foram agrupadas em menus de contexto;
+- cards novos passaram a iniciar automaticamente como `Novo`;
+- o formulário deixou de permitir a escolha manual da dificuldade inicial;
+- a criação rápida passou a priorizar o baralho contextual;
+- a importação foi consolidada em quatro etapas: Destino, Conteúdo, Revisão e Resultado;
+- formulários extensos passaram a ocupar melhor a tela em dispositivos móveis;
+- o resumo final da importação passou a usar cards mais largos e responsivos.
 
-### Observações
+### Corrigido
 
-- Os layouts da v0.1 são funcionais, porém provisórios, e devem ser refinados após os testes reais de uso.
-- O plano de testes ainda precisa ser executado antes do fechamento oficial da versão.
+- carregamento de arquivos antigos causado por cache e Service Worker de outro projeto no ambiente local;
+- aparência inconsistente dos selects e do campo de arquivo;
+- extrapolação horizontal de flashcards importados com textos longos;
+- perda de foco durante pesquisas;
+- espaçamento interno do aviso de Estudo livre;
+- rolagem externa indevida durante sessões com escala ampliada;
+- sobreposição dos controles da revisão em telas abaixo de 621 px;
+- impossibilidade de concluir importações formadas somente por duplicatas ignoradas;
+- erro ao abrir a confirmação de exclusão total por carregamento duplicado de `modal.js`.
+
+### Removido
+
+- campo de dificuldade inicial do formulário de flashcards;
+- alteração do cronograma durante o Estudo livre.
+
+### Homologação
+
+- concluída homologação final com **22 de 22 testes manuais aprovados**;
+- verificações automatizadas de sintaxe e integridade aprovadas;
+- correções encontradas em HF-15, HF-19 e HF-21 retestadas e aprovadas;
+- responsividade validada em celulares, tablet, paisagem, desktop e zoom do navegador em 200%;
+- escalas de revisão de 100%, 125% e 150% validadas;
+- nenhuma falha bloqueadora conhecida no fechamento da versão.
+
+### Limitações conhecidas
+
+- os dados ficam armazenados somente no navegador atual;
+- não há login, backend ou sincronização entre dispositivos;
+- não existe exportação de backup nesta versão;
+- o algoritmo de repetição espaçada ainda é simplificado;
+- a instalação como PWA e o funcionamento offline completo ficam para versões futuras.

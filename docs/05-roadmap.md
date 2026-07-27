@@ -2,121 +2,120 @@
 
 ## Versão atual
 
-### v0.1 - Fundação Essencial
+### v0.1.0 — Fundação Essencial
 
-Status: Planejada
+**Status:** Concluída  
+**Data de fechamento:** 27/07/2026
 
-Objetivo:
-Construir uma base organizada, responsiva e realmente utilizável para criação, importação, organização e revisão de flashcards, seguindo o Modelo de Projeto.
+A v0.1.0 estabelece a primeira base oficial e utilizável do FlashCore. A versão foi homologada com **22 de 22 testes manuais aprovados**, sem falhas bloqueadoras conhecidas.
 
-Funcionalidades:
-- Estrutura modular do projeto.
-- Shell responsivo e navegação principal.
-- Tela inicial com resumo e ações rápidas.
-- Criação, edição e exclusão de baralhos.
-- Criação, visualização, edição, movimentação e exclusão de flashcards.
-- Pesquisa e filtros.
-- Importação por texto estruturado e CSV para um baralho escolhido.
-- Prévia, validação e tratamento básico de duplicatas.
-- Revisão programada.
-- Revisão livre por baralho.
-- Classificação por Errei, Difícil, Bom e Fácil.
-- Resultado básico da sessão.
-- Tema claro, escuro e preferência do sistema.
-- Modais próprios e mensagens de retorno.
-- Persistência em `localStorage`.
-- Responsividade mobile-first.
-- Documentação e plano de testes atualizados.
+### Principais entregas
 
-Critérios para fechar a versão:
-- Todos os fluxos essenciais devem funcionar sem erros bloqueadores.
-- Os dados devem permanecer íntegros após recarregar a página.
-- A importação deve rejeitar registros inválidos sem corromper os válidos.
-- A revisão programada e a revisão livre devem produzir filas corretas.
-- A interface deve funcionar em larguras pequenas sem rolagem horizontal indesejada.
-- Todas as ações destrutivas devem possuir confirmação adequada.
-- O checklist de testes da v0.1 deve estar concluído.
+- organização por baralhos;
+- criação, edição, movimentação e exclusão de flashcards;
+- pesquisa, filtros e ordenação;
+- importação por texto estruturado e CSV;
+- validação de registros inválidos e tratamento de duplicatas;
+- revisão programada com reagendamento;
+- Estudo livre sem alteração do cronograma;
+- modo focado com escalas de 100%, 125% e 150%;
+- relatório com Índice de recordação;
+- temas claro, escuro e do sistema;
+- configurações de revisão;
+- proteção contra descarte acidental de formulários;
+- persistência local versionada;
+- interface responsiva e mobile-first.
+
+### Encerramento da versão
+
+- verificações automatizadas de sintaxe e integridade aprovadas;
+- homologação HF-01 a HF-22 concluída;
+- correções encontradas durante a homologação retestadas e aprovadas;
+- documentação, testes e changelog atualizados;
+- versão pronta para tag `v0.1.0` e GitHub Release.
 
 ---
 
 ## Próximas versões
 
-### v0.2 - Revisão e desempenho
+### v0.2 — Revisão e desempenho
 
-Objetivo:
-Aprimorar a qualidade da revisão e oferecer informações mais úteis sobre o progresso do usuário.
+**Objetivo:** aprimorar a qualidade da revisão e oferecer informações mais úteis sobre o progresso do usuário.
+
+A definição final do escopo será feita após um período de uso real da v0.1.0.
 
 Funcionalidades planejadas:
-- Algoritmo de repetição espaçada mais consistente.
-- Configuração de limite diário.
-- Ordem de revisão configurável.
-- Revisão por erros, tags ou dificuldade.
-- Histórico detalhado das sessões.
-- Estatísticas por baralho.
-- Indicadores de retenção e evolução.
-- Atalhos de teclado para a sessão.
-- Melhorias de acessibilidade e redução de movimento.
+
+- algoritmo de repetição espaçada mais consistente;
+- configuração de limite diário;
+- ordem de revisão configurável;
+- revisão por erros, tags ou dificuldade;
+- histórico detalhado das sessões;
+- estatísticas por baralho;
+- indicadores de retenção e evolução;
+- atalhos de teclado para a sessão;
+- melhorias de acessibilidade e redução de movimento.
 
 ---
 
-### v0.3 - Segurança dos dados e portabilidade
+### v0.3 — Segurança dos dados e portabilidade
 
-Objetivo:
-Dar ao usuário controle completo sobre os próprios dados e preparar a aplicação para uso prolongado.
+**Objetivo:** dar ao usuário controle completo sobre os próprios dados e preparar a aplicação para uso prolongado.
 
 Funcionalidades planejadas:
-- Exportação de backup em JSON.
-- Importação e restauração de backup.
-- Histórico de backups locais.
-- Importação por JSON.
-- Relatório detalhado de conflitos e duplicatas.
-- Migração de `localStorage` para IndexedDB, se necessária.
-- Preparação para instalação como PWA.
+
+- exportação de backup em JSON;
+- importação e restauração de backup;
+- histórico de backups locais;
+- importação por JSON;
+- relatório detalhado de conflitos e duplicatas;
+- migração de `localStorage` para IndexedDB, se necessária;
+- preparação para instalação como PWA.
 
 ---
 
-### v0.4 - PWA e experiência offline
+### v0.4 — PWA e experiência offline
 
-Objetivo:
-Transformar o FlashCore em uma aplicação instalável e confiável para uso cotidiano.
+**Objetivo:** transformar o FlashCore em uma aplicação instalável e confiável para uso cotidiano.
 
 Funcionalidades planejadas:
-- Manifesto da aplicação.
-- Service worker.
-- Instalação em desktop e celular.
-- Cache dos arquivos essenciais.
-- Tela e mensagens de estado offline.
-- Atualização controlada da aplicação.
+
+- manifesto da aplicação;
+- service worker;
+- instalação em desktop e celular;
+- cache dos arquivos essenciais;
+- tela e mensagens de estado offline;
+- atualização controlada da aplicação.
 
 ---
 
-### v1.0 - Primeira versão estável
+### v1.0 — Primeira versão estável
 
-Objetivo:
-Consolidar o FlashCore como uma aplicação local completa para estudos por flashcards, com organização, revisão, importação, backup e uso móvel confiáveis.
+**Objetivo:** consolidar o FlashCore como uma aplicação local completa para estudos por flashcards, com organização, revisão, importação, backup e uso móvel confiáveis.
 
 Critérios para fechar a versão:
-- Fluxos principais estáveis e documentados.
-- Revisão programada validada em uso real.
-- Importação e backup testados com diferentes volumes de dados.
-- Experiência mobile refinada.
-- Acessibilidade básica revisada.
-- PWA instalável e funcional offline.
-- Migrações de dados testadas sem perda de conteúdo.
-- Documentação, changelog e testes atualizados.
-- Ausência de bugs críticos conhecidos.
+
+- fluxos principais estáveis e documentados;
+- revisão programada validada em uso real;
+- importação e backup testados com diferentes volumes de dados;
+- experiência mobile refinada;
+- acessibilidade básica revisada;
+- PWA instalável e funcional offline;
+- migrações de dados testadas sem perda de conteúdo;
+- documentação, changelog e testes atualizados;
+- ausência de bugs críticos conhecidos.
 
 ---
 
 ## Ideias futuras
 
-- Sincronização opcional entre dispositivos.
-- Contas de usuário sem abandonar o modo local.
-- Cards com imagens, áudio e fórmulas.
-- Modelos reutilizáveis de flashcards.
-- Baralhos compartilháveis por arquivo ou link.
-- Campos personalizados por tipo de card.
-- Modo de escrita da resposta antes de revelar o verso.
-- Revisão de perguntas discursivas.
-- Integração futura com a Central de Estudos Web.
-- Importação de formatos externos, quando tecnicamente viável.
+- sincronização opcional entre dispositivos;
+- contas de usuário sem abandonar o modo local;
+- cards com imagens, áudio e fórmulas;
+- modelos reutilizáveis de flashcards;
+- baralhos compartilháveis por arquivo ou link;
+- campos personalizados por tipo de card;
+- modo de escrita da resposta antes de revelar o verso;
+- revisão de perguntas discursivas;
+- integração futura com a Central de Estudos Web;
+- importação de formatos externos, quando tecnicamente viável.
