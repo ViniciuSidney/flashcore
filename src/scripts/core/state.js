@@ -1,9 +1,15 @@
 import {APP_CONFIG} from './config.js';
 import {DECK_COLORS, DECK_ICONS, THEMES} from './constants.js';
-import {getStorageItem, removeStorageItem, setStorageItem} from '../shared/storage.js';
+import {LocalStorageStateRepository} from '../data/local/local-storage-state-repository.js';
 import {createId, parseTags} from '../shared/helpers.js';
 
 const listeners = new Set();
+const stateRepository = new LocalStorageStateRepository();
+
+function reportRepositoryFailure(result, action) {
+	if (result?.ok !== false) return;
+	console.error(`Não foi possível ${action}:`, result.error);
+}
 
 function createInitialState() {
 	return {
@@ -67,9 +73,22 @@ function normalizeCard(card) {
 	};
 }
 
+function persistState(candidate, action) {
+	const result = stateRepository.writePrimary(candidate);
+	reportRepositoryFailure(result, action);
+	return result;
+}
+
 function migrateLegacyState() {
-	for (const key of APP_CONFIG.legacyStorageKeys) {
-		const legacy = getStorageItem(key, null);
+	const result = stateRepository.readLegacySources();
+
+	if (!result.ok) {
+		reportRepositoryFailure(result, 'ler os dados legados');
+		return null;
+	}
+
+	for (const source of result.data) {
+		const legacy = source.state;
 		if (!legacy || !Array.isArray(legacy.decks) || !Array.isArray(legacy.cards)) continue;
 
 		const migrated = normalizeState({
@@ -78,13 +97,25 @@ function migrateLegacyState() {
 			cards: legacy.cards,
 			sessions: []
 		});
-		setStorageItem(APP_CONFIG.storageKey, migrated);
+		persistState(migrated, 'salvar os dados migrados');
 		return migrated;
 	}
+
 	return null;
 }
 
-let state = normalizeState(getStorageItem(APP_CONFIG.storageKey, null) ?? migrateLegacyState());
+function loadInitialState() {
+	const result = stateRepository.readPrimary();
+
+	if (!result.ok) {
+		reportRepositoryFailure(result, 'ler os dados locais');
+		return normalizeState(migrateLegacyState());
+	}
+
+	return normalizeState(result.data.state ?? migrateLegacyState());
+}
+
+let state = loadInitialState();
 
 export function getState() {
 	return state;
@@ -95,7 +126,7 @@ export function mutateState(mutator, reason = 'update') {
 	mutator(draft);
 	draft.updatedAt = Date.now();
 	state = normalizeState(draft);
-	setStorageItem(APP_CONFIG.storageKey, state);
+	persistState(state, 'salvar os dados locais');
 	listeners.forEach((listener) => listener(state, reason));
 	return state;
 }
@@ -103,15 +134,16 @@ export function mutateState(mutator, reason = 'update') {
 export function replaceState(nextState, reason = 'replace') {
 	state = normalizeState(nextState);
 	state.updatedAt = Date.now();
-	setStorageItem(APP_CONFIG.storageKey, state);
+	persistState(state, 'substituir os dados locais');
 	listeners.forEach((listener) => listener(state, reason));
 	return state;
 }
 
 export function resetState() {
-	removeStorageItem(APP_CONFIG.storageKey);
+	const clearResult = stateRepository.clearPrimary({reason: 'reset'});
+	reportRepositoryFailure(clearResult, 'remover os dados locais');
 	state = createInitialState();
-	setStorageItem(APP_CONFIG.storageKey, state);
+	persistState(state, 'reinicializar os dados locais');
 	listeners.forEach((listener) => listener(state, 'reset'));
 	return state;
 }

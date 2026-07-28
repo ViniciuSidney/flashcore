@@ -249,8 +249,9 @@ function createVerificationFailure({
 /**
  * Adaptador inicial de persistência local da v0.2.0.
  *
- * Nesta etapa ele mantém a chave homologada da v0.1.0 e não é conectado
- * ao state.js. A substituição crítica ainda usa uma estratégia transitória
+ * Nesta etapa ele mantém a chave homologada da v0.1.0 e passa a atender
+ * o state.js sem alterar o comportamento funcional existente. A substituição
+ * crítica ainda usa uma estratégia transitória
  * de gravação direta verificada; staging e rollback serão adicionados na
  * fase específica de restauração segura.
  */
