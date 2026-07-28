@@ -248,6 +248,35 @@ test('executeMutation persiste, confirma e somente então atualiza a memória', 
 	assert.equal(notifications[0].snapshot.settings.reviewLimit, 30);
 });
 
+test('executeMutation preserva o draft quando o mutator retorna acidentalmente o resultado de push', async () => {
+	const state = await loadJsonFixture('states/state-v0.1-empty.json');
+	const repository = new InMemoryStateRepository({primary: state});
+	const store = createStore({repository, initialState: state});
+	await store.initialize();
+
+	const deck = {
+		id: 'deck-push-regression',
+		name: 'Baralho de regressão',
+		description: '',
+		color: '#2563eb',
+		icon: '📚',
+		createdAt: 1800000000000,
+		updatedAt: 1800000000000,
+		lastOpenedAt: 0
+	};
+
+	const result = await store.executeMutation(
+		(draft) => draft.decks.push(deck),
+		{reason: 'deck:create'}
+	);
+
+	assert.equal(result.ok, true);
+	assert.equal(result.data.snapshot.decks.length, 1);
+	assert.equal(result.data.snapshot.decks[0].id, deck.id);
+	assert.equal(repository.getPrimarySnapshot().decks.length, 1);
+	assert.equal(store.getSnapshot().decks.length, 1);
+});
+
 test('falha de persistência preserva o snapshot e não notifica listeners', async () => {
 	const state = await loadJsonFixture('states/state-v0.1-normal.json');
 	const repository = new FailingWriteRepository({primary: state});

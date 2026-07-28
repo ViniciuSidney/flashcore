@@ -17,34 +17,61 @@ export function applyTheme(theme = getState().settings.theme) {
 	if (icon) icon.textContent = safeTheme === THEMES.LIGHT ? '☀' : safeTheme === THEMES.DARK ? '☾' : '◐';
 }
 
-export function changeTheme(theme) {
-	mutateState((state) => { state.settings.theme = theme; }, 'settings:theme');
+export async function changeTheme(theme) {
+	const result = await mutateState(
+		(state) => { state.settings.theme = theme; },
+		'settings:theme'
+	);
+	if (!result.ok) {
+		showToast('Não foi possível alterar o tema.', 'warning');
+		return false;
+	}
 	applyTheme(theme);
 	showToast(`Tema ${theme === 'light' ? 'claro' : theme === 'dark' ? 'escuro' : 'do sistema'} ativado.`);
+	return true;
 }
 
-export function cycleTheme() {
+export async function cycleTheme() {
 	const order = [THEMES.SYSTEM, THEMES.LIGHT, THEMES.DARK];
 	const current = getState().settings.theme;
-	changeTheme(order[(order.indexOf(current) + 1) % order.length]);
+	return changeTheme(order[(order.indexOf(current) + 1) % order.length]);
 }
 
-export function changeReviewLimit(value) {
-	mutateState((state) => { state.settings.reviewLimit = Number(value) || APP_CONFIG.defaultReviewLimit; }, 'settings:review-limit');
+export async function changeReviewLimit(value) {
+	const result = await mutateState(
+		(state) => {
+			state.settings.reviewLimit = Number(value) || APP_CONFIG.defaultReviewLimit;
+		},
+		'settings:review-limit'
+	);
+	if (!result.ok) {
+		showToast('Não foi possível atualizar o limite de revisão.', 'warning');
+		return false;
+	}
 	showToast('Limite de revisão atualizado.');
+	return true;
 }
 
-export function changeShowIntervals(enabled) {
-	mutateState((state) => { state.settings.showIntervals = Boolean(enabled); }, 'settings:intervals');
+export async function changeShowIntervals(enabled) {
+	const result = await mutateState(
+		(state) => { state.settings.showIntervals = Boolean(enabled); },
+		'settings:intervals'
+	);
+	if (!result.ok) {
+		showToast('Não foi possível atualizar a preferência de intervalos.', 'warning');
+		return false;
+	}
 	showToast('Preferência de intervalos atualizada.');
+	return true;
 }
 
-export function changeReviewScale(value) {
+export async function changeReviewScale(value) {
 	const allowedScales = [100, 125, 150];
 	const scale = Number(value);
-	mutateState((state) => {
+	const result = await mutateState((state) => {
 		state.settings.reviewScale = allowedScales.includes(scale) ? scale : 100;
 	}, 'settings:review-scale');
+	return result.ok;
 }
 
 export async function confirmDeleteAllData() {
@@ -69,7 +96,11 @@ export async function confirmDeleteAllData() {
 		validate: (values) => values.confirmation?.trim() === 'EXCLUIR' ? '' : 'Digite EXCLUIR exatamente como indicado.'
 	});
 	if (!second.confirmed) return false;
-	resetState();
+	const resetResult = await resetState();
+	if (!resetResult.ok) {
+		showToast('Não foi possível excluir os dados locais.', 'warning');
+		return false;
+	}
 	applyTheme();
 	showToast('Todos os dados foram excluídos.', 'warning');
 	return true;

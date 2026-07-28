@@ -1,21 +1,27 @@
 import {APP_CONFIG} from './config.js';
 import {DECK_COLORS, DECK_ICONS, THEMES} from './constants.js';
+import {AppStateStore, APP_STATE_PHASES} from './app-state-store.js';
 import {LocalStorageStateRepository} from '../data/local/local-storage-state-repository.js';
+import {StateSchemaService} from '../data/validation/state-schema.service.js';
+import {createSuccessResult} from '../shared/result.js';
 import {createId, parseTags} from '../shared/helpers.js';
 
-const listeners = new Set();
 const stateRepository = new LocalStorageStateRepository();
+const stateSchemaService = new StateSchemaService();
+let initializationPromise = null;
 
-function reportRepositoryFailure(result, action) {
+function reportStateFailure(result, action) {
 	if (result?.ok !== false) return;
 	console.error(`Não foi possível ${action}:`, result.error);
 }
 
 function createInitialState() {
+	const now = Date.now();
+
 	return {
 		schemaVersion: APP_CONFIG.schemaVersion,
-		createdAt: Date.now(),
-		updatedAt: Date.now(),
+		createdAt: now,
+		updatedAt: now,
 		settings: {
 			theme: THEMES.SYSTEM,
 			reviewLimit: APP_CONFIG.defaultReviewLimit,
@@ -39,7 +45,9 @@ function normalizeState(input) {
 		settings: {...base.settings, ...(input.settings ?? {})},
 		decks: Array.isArray(input.decks) ? input.decks.map(normalizeDeck) : [],
 		cards: Array.isArray(input.cards) ? input.cards.map(normalizeCard) : [],
-		sessions: Array.isArray(input.sessions) ? input.sessions.slice(-APP_CONFIG.maxSessionsStored) : []
+		sessions: Array.isArray(input.sessions)
+			? input.sessions.slice(-APP_CONFIG.maxSessionsStored)
+			: []
 	};
 }
 
@@ -73,23 +81,32 @@ function normalizeCard(card) {
 	};
 }
 
-function persistState(candidate, action) {
-	const result = stateRepository.writePrimary(candidate);
-	reportRepositoryFailure(result, action);
-	return result;
-}
+const appStateStore = new AppStateStore({
+	repository: stateRepository,
+	schemaService: stateSchemaService,
+	createInitialState,
+	normalizeInternalState: normalizeState
+});
 
-function migrateLegacyState() {
-	const result = stateRepository.readLegacySources();
+async function prepareLegacyMigration() {
+	const primaryResult = await stateRepository.readPrimary();
+	if (!primaryResult.ok) return primaryResult;
 
-	if (!result.ok) {
-		reportRepositoryFailure(result, 'ler os dados legados');
-		return null;
+	if (primaryResult.data.exists) {
+		return createSuccessResult(
+			{migrated: false, source: 'primary'},
+			{metadata: {stage: 'legacy-preflight'}}
+		);
 	}
 
-	for (const source of result.data) {
+	const legacyResult = await stateRepository.readLegacySources();
+	if (!legacyResult.ok) return legacyResult;
+
+	for (const source of legacyResult.data) {
 		const legacy = source.state;
-		if (!legacy || !Array.isArray(legacy.decks) || !Array.isArray(legacy.cards)) continue;
+		if (!legacy || !Array.isArray(legacy.decks) || !Array.isArray(legacy.cards)) {
+			continue;
+		}
 
 		const migrated = normalizeState({
 			settings: legacy.settings,
@@ -97,58 +114,110 @@ function migrateLegacyState() {
 			cards: legacy.cards,
 			sessions: []
 		});
-		persistState(migrated, 'salvar os dados migrados');
-		return migrated;
+		const validationResult = stateSchemaService.validate(migrated);
+		if (!validationResult.ok) continue;
+
+		const writeResult = await stateRepository.writePrimary(
+			validationResult.data.state
+		);
+		if (!writeResult.ok) return writeResult;
+
+		return createSuccessResult(
+			{
+				migrated: true,
+				source: source.key,
+				state: writeResult.data.state
+			},
+			{
+				warnings: validationResult.warnings,
+				metadata: {
+					stage: 'legacy-preflight',
+					preservedLegacySource: true
+				}
+			}
+		);
 	}
 
-	return null;
+	return createSuccessResult(
+		{migrated: false, source: null},
+		{metadata: {stage: 'legacy-preflight'}}
+	);
 }
 
-function loadInitialState() {
-	const result = stateRepository.readPrimary();
-
-	if (!result.ok) {
-		reportRepositoryFailure(result, 'ler os dados locais');
-		return normalizeState(migrateLegacyState());
+async function runInitialization() {
+	const migrationResult = await prepareLegacyMigration();
+	if (!migrationResult.ok) {
+		reportStateFailure(migrationResult, 'preparar os dados locais');
+		return migrationResult;
 	}
 
-	return normalizeState(result.data.state ?? migrateLegacyState());
+	const result = await appStateStore.initialize();
+	reportStateFailure(result, 'inicializar o estado da aplicação');
+	return result;
 }
 
-let state = loadInitialState();
+export async function initializeState() {
+	if (appStateStore.getStatus().phase === APP_STATE_PHASES.READY) {
+		return appStateStore.initialize();
+	}
+
+	if (initializationPromise) return initializationPromise;
+
+	initializationPromise = runInitialization();
+
+	try {
+		return await initializationPromise;
+	} finally {
+		initializationPromise = null;
+	}
+}
 
 export function getState() {
-	return state;
+	const snapshot = appStateStore.getSnapshot();
+
+	if (snapshot === null) {
+		throw new Error(
+			'O estado ainda não foi inicializado. Execute initializeState() antes de acessá-lo.'
+		);
+	}
+
+	return snapshot;
 }
 
-export function mutateState(mutator, reason = 'update') {
-	const draft = structuredClone(state);
-	mutator(draft);
-	draft.updatedAt = Date.now();
-	state = normalizeState(draft);
-	persistState(state, 'salvar os dados locais');
-	listeners.forEach((listener) => listener(state, reason));
-	return state;
+export async function mutateState(mutator, reason = 'update') {
+	const initializationResult = await initializeState();
+	if (!initializationResult.ok) return initializationResult;
+
+	const result = await appStateStore.executeMutation(mutator, {reason});
+	reportStateFailure(result, 'salvar os dados locais');
+	return result;
 }
 
-export function replaceState(nextState, reason = 'replace') {
-	state = normalizeState(nextState);
-	state.updatedAt = Date.now();
-	persistState(state, 'substituir os dados locais');
-	listeners.forEach((listener) => listener(state, reason));
-	return state;
+export async function replaceState(nextState, reason = 'replace') {
+	const initializationResult = await initializeState();
+	if (!initializationResult.ok) return initializationResult;
+
+	const result = await appStateStore.executeMutation(
+		() => nextState,
+		{reason}
+	);
+	reportStateFailure(result, 'substituir os dados locais');
+	return result;
 }
 
-export function resetState() {
-	const clearResult = stateRepository.clearPrimary({reason: 'reset'});
-	reportRepositoryFailure(clearResult, 'remover os dados locais');
-	state = createInitialState();
-	persistState(state, 'reinicializar os dados locais');
-	listeners.forEach((listener) => listener(state, 'reset'));
-	return state;
+export async function resetState() {
+	const initializationResult = await initializeState();
+	if (!initializationResult.ok) return initializationResult;
+
+	const result = await appStateStore.resetToInitialState({reason: 'reset'});
+	reportStateFailure(result, 'reinicializar os dados locais');
+	return result;
 }
 
 export function subscribeState(listener) {
-	listeners.add(listener);
-	return () => listeners.delete(listener);
+	return appStateStore.subscribe(listener);
+}
+
+export function getStateStatus() {
+	return appStateStore.getStatus();
 }

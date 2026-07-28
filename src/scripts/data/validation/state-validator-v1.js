@@ -7,7 +7,7 @@ import {
 export const STATE_SCHEMA_VERSION_V1 = 1;
 
 const REVIEW_SCALES = Object.freeze([100, 125, 150]);
-const SESSION_MODES = Object.freeze(['scheduled', 'free']);
+const SESSION_MODES = Object.freeze(['scheduled', 'free', 'retry']);
 
 function isPlainObject(value) {
 	if (value === null || typeof value !== 'object') return false;

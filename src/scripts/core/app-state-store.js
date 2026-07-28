@@ -306,9 +306,9 @@ export class AppStateStore {
 		try {
 			const draft = cloneValue(this.#snapshot);
 			const mutationOutput = await mutator(draft);
-			candidate = mutationOutput === undefined
-				? draft
-				: cloneValue(mutationOutput);
+			candidate = isPlainObject(mutationOutput)
+				? cloneValue(mutationOutput)
+				: draft;
 
 			if (isPlainObject(candidate) && 'updatedAt' in candidate) {
 				candidate.updatedAt = this.#clock();

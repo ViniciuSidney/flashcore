@@ -1,5 +1,5 @@
 import {ROUTES} from './core/constants.js';
-import {getState, subscribeState} from './core/state.js';
+import {getState, initializeState, subscribeState} from './core/state.js';
 import {navigate, startRouter} from './core/router.js';
 import {initModal, openConfirm} from './shared/modal.js?v=0.1.1';
 import {initToast, showToast} from './shared/toast.js';
@@ -12,7 +12,7 @@ import {renderDeckDetail} from './features/cards/cards.ui.js?v=0.1.1';
 import {confirmDeleteCard, promptCreateCard, promptEditCard, promptMoveCard} from './features/cards/cards.controller.js?v=0.1.1';
 import {renderReport, renderReview} from './features/review/review.ui.js?v=0.1.4';
 import {discardSession, finishSession, getActiveSession, gradeCurrentCard, revealAnswer, startSession} from './features/review/review.service.js';
-import {buildImportPreview, finalizeImport, getImportDraft, goToImportStep, hasImportDraftContent, loadCSVFile, prepareImport, renderImport, resetImport, setImportValue} from './features/importer/importer.controller.js?v=0.1.1';
+import {buildImportPreview, finalizeImport, getImportDraft, goToImportStep, hasImportDraftContent, loadCSVFile, prepareImport, renderImport, resetImport, setImportValue} from './features/importer/importer.controller.js?v=0.2.0-c3.1';
 import {applyTheme, changeReviewLimit, changeReviewScale, changeShowIntervals, changeTheme, confirmDeleteAllData, cycleTheme, renderSettings} from './features/settings/settings.controller.js?v=0.1.1';
 
 const appView = document.querySelector('#appView');
@@ -42,9 +42,16 @@ const routeMeta = {
 	[ROUTES.REPORT]: ['Resultado', 'Resumo da sessão']
 };
 
-export function initApp() {
+export async function initApp() {
 	initModal();
 	initToast();
+
+	const initializationResult = await initializeState();
+	if (!initializationResult.ok) {
+		renderInitializationFailure(initializationResult);
+		return initializationResult;
+	}
+
 	applyTheme();
 	bindGlobalEvents();
 
@@ -65,7 +72,7 @@ export function initApp() {
 			ui.cardFilter = 'all';
 			ui.selectedCardId = '';
 			ui.showCardDetailMobile = false;
-			touchDeck(route.params.deckId);
+			void touchDeck(route.params.deckId);
 		}
 		if (route.name === ROUTES.IMPORT) prepareImport();
 		previousRouteKey = routeKey;
@@ -73,6 +80,24 @@ export function initApp() {
 	});
 
 	updateGlobalSummary();
+	return initializationResult;
+}
+
+function renderInitializationFailure(result) {
+	pageEyebrow.textContent = 'Armazenamento local';
+	pageTitle.textContent = 'Não foi possível iniciar';
+	sidebarDueCount.textContent = '—';
+	appView.innerHTML = `
+		<section class="panel empty-state">
+			<div class="empty-state__content">
+				<span class="empty-state__icon" aria-hidden="true">!</span>
+				<h2>Seus dados não foram alterados</h2>
+				<p>O FlashCore interrompeu a inicialização porque não conseguiu validar ou acessar o estado local com segurança.</p>
+				<small class="text-muted">Código técnico: ${result.error?.code ?? 'UNKNOWN'}</small>
+			</div>
+		</section>
+	`;
+	showToast('Não foi possível carregar os dados locais com segurança.', 'warning');
 }
 
 function captureSearchFocus() {
@@ -193,7 +218,7 @@ async function handleClick(event) {
 			break;
 		}
 		case 'create-example':
-			if (createExampleData()) showToast('Conteúdo de exemplo criado.');
+			if (await createExampleData()) showToast('Conteúdo de exemplo criado.');
 			else showToast('O exemplo só pode ser carregado com a aplicação vazia.', 'warning');
 			break;
 		case 'edit-deck':
@@ -263,7 +288,11 @@ async function handleClick(event) {
 			renderCurrentRoute();
 			break;
 		case 'grade-card': {
-			const result = gradeCurrentCard(grade);
+			const result = await gradeCurrentCard(grade);
+			if (!result.persisted) {
+				showToast('Não foi possível registrar a resposta.', 'warning');
+				break;
+			}
 			if (result.finished) navigate(ROUTES.REPORT);
 			else renderCurrentRoute();
 			break;
@@ -272,14 +301,14 @@ async function handleClick(event) {
 			const levels = [100, 125, 150];
 			const current = Number(getState().settings.reviewScale) || 100;
 			const currentIndex = Math.max(0, levels.indexOf(current));
-			changeReviewScale(levels[Math.max(0, currentIndex - 1)]);
+			await changeReviewScale(levels[Math.max(0, currentIndex - 1)]);
 			break;
 		}
 		case 'review-scale-up': {
 			const levels = [100, 125, 150];
 			const current = Number(getState().settings.reviewScale) || 100;
 			const currentIndex = Math.max(0, levels.indexOf(current));
-			changeReviewScale(levels[Math.min(levels.length - 1, currentIndex + 1)]);
+			await changeReviewScale(levels[Math.min(levels.length - 1, currentIndex + 1)]);
 			break;
 		}
 		case 'exit-review': {
@@ -292,8 +321,9 @@ async function handleClick(event) {
 				variant: 'warning'
 			});
 			if (confirmation.confirmed) {
-				finishSession(false);
-				navigate(ROUTES.REPORT);
+				const session = await finishSession(false);
+				if (session) navigate(ROUTES.REPORT);
+				else showToast('Não foi possível salvar o encerramento da sessão.', 'warning');
 			}
 			break;
 		}
@@ -320,8 +350,7 @@ async function handleClick(event) {
 			renderCurrentRoute();
 			break;
 		case 'import-finish':
-			finalizeImport();
-			renderCurrentRoute();
+			if (await finalizeImport()) renderCurrentRoute();
 			break;
 		case 'restart-import':
 			resetImport(getImportDraft().deckId);
@@ -341,7 +370,7 @@ async function handleClick(event) {
 			break;
 		}
 		case 'toggle-theme':
-			cycleTheme();
+			await cycleTheme();
 			break;
 	}
 }
@@ -400,9 +429,9 @@ async function handleChange(event) {
 		setImportValue('duplicatePolicy', target.value);
 		renderCurrentRoute();
 	}
-	if (target.matches('input[name="theme"]')) changeTheme(target.value);
-	if (target.matches('#reviewLimitSelect')) changeReviewLimit(target.value);
-	if (target.matches('#showIntervalsToggle')) changeShowIntervals(target.checked);
+	if (target.matches('input[name="theme"]')) await changeTheme(target.value);
+	if (target.matches('#reviewLimitSelect')) await changeReviewLimit(target.value);
+	if (target.matches('#showIntervalsToggle')) await changeShowIntervals(target.checked);
 }
 
 const updateDeckSearch = debounce((value) => {

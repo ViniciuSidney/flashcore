@@ -25,7 +25,7 @@ export function getFilteredCards(deckId, {search = '', filter = 'all'} = {}) {
 		.sort((a, b) => a.nextReviewAt - b.nextReviewAt || b.updatedAt - a.updatedAt);
 }
 
-export function createCard(data) {
+export async function createCard(data) {
 	const card = {
 		id: createId(),
 		deckId: data.deckId,
@@ -40,12 +40,17 @@ export function createCard(data) {
 		lastReviewedAt: 0,
 		nextReviewAt: Date.now()
 	};
-	mutateState((state) => state.cards.push(card), 'card:create');
-	return card;
+	const result = await mutateState(
+		(state) => {
+			state.cards.push(card);
+		},
+		'card:create'
+	);
+	return result.ok ? card : null;
 }
 
-export function updateCard(cardId, data) {
-	mutateState((state) => {
+export async function updateCard(cardId, data) {
+	const result = await mutateState((state) => {
 		const card = state.cards.find((item) => item.id === cardId);
 		if (!card) return;
 		card.deckId = data.deckId;
@@ -54,24 +59,27 @@ export function updateCard(cardId, data) {
 		card.tags = parseTags(data.tags);
 		card.updatedAt = Date.now();
 	}, 'card:update');
+	return result.ok;
 }
 
-export function moveCard(cardId, deckId) {
-	mutateState((state) => {
+export async function moveCard(cardId, deckId) {
+	const result = await mutateState((state) => {
 		const card = state.cards.find((item) => item.id === cardId);
 		if (!card) return;
 		card.deckId = deckId;
 		card.updatedAt = Date.now();
 	}, 'card:move');
+	return result.ok;
 }
 
-export function deleteCard(cardId) {
-	mutateState((state) => {
+export async function deleteCard(cardId) {
+	const result = await mutateState((state) => {
 		state.cards = state.cards.filter((card) => card.id !== cardId);
 	}, 'card:delete');
+	return result.ok;
 }
 
-export function addImportedCards(deckId, records) {
+export async function addImportedCards(deckId, records) {
 	const now = Date.now();
 	const cards = records.map((record) => ({
 		id: createId(),
@@ -87,8 +95,13 @@ export function addImportedCards(deckId, records) {
 		lastReviewedAt: 0,
 		nextReviewAt: now
 	}));
-	mutateState((state) => state.cards.push(...cards), 'cards:import');
-	return cards;
+	const result = await mutateState(
+		(state) => {
+			state.cards.push(...cards);
+		},
+		'cards:import'
+	);
+	return result.ok ? cards : null;
 }
 
 export function isDuplicateCard(deckId, candidate, additionalRecords = []) {

@@ -53,7 +53,11 @@ export async function promptCreateCard(defaultDeckId = '') {
 		validate: (values) => validateCard(values, getState().decks)
 	});
 	if (!result.confirmed) return null;
-	const card = createCard(result.values);
+	const card = await createCard(result.values);
+	if (!card) {
+		showToast('Não foi possível criar o flashcard.', 'warning');
+		return null;
+	}
 	showToast('Flashcard criado.');
 	return card;
 }
@@ -71,7 +75,11 @@ export async function promptEditCard(cardId) {
 		validate: (values) => validateCard(values, getState().decks)
 	});
 	if (!result.confirmed) return false;
-	updateCard(cardId, result.values);
+	const updated = await updateCard(cardId, result.values);
+	if (!updated) {
+		showToast('Não foi possível atualizar o flashcard.', 'warning');
+		return false;
+	}
 	showToast('Flashcard atualizado.');
 	return true;
 }
@@ -88,7 +96,11 @@ export async function promptMoveCard(cardId) {
 		confirmText: 'Mover card'
 	});
 	if (!result.confirmed || result.values.deckId === card.deckId) return false;
-	moveCard(cardId, result.values.deckId);
+	const moved = await moveCard(cardId, result.values.deckId);
+	if (!moved) {
+		showToast('Não foi possível mover o flashcard.', 'warning');
+		return false;
+	}
 	showToast('Flashcard movido.');
 	return true;
 }
@@ -105,7 +117,11 @@ export async function confirmDeleteCard(cardId) {
 		variant: 'danger'
 	});
 	if (!result.confirmed) return false;
-	deleteCard(cardId);
+	const deleted = await deleteCard(cardId);
+	if (!deleted) {
+		showToast('Não foi possível excluir o flashcard.', 'warning');
+		return false;
+	}
 	showToast('Flashcard excluído.', 'warning');
 	return true;
 }

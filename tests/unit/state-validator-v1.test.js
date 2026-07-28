@@ -96,3 +96,12 @@ test('validador v1 rejeita raiz, coleções e campos obrigatórios inválidos', 
 	assert.ok(result.errors.some((issue) => issue.path === 'settings.reviewScale'));
 	assert.ok(result.errors.some((issue) => issue.path === 'decks'));
 });
+
+test('validador v1 preserva sessões de reforço usadas pela aplicação', async () => {
+	const state = await loadJsonFixture('states/state-v0.1-normal.json');
+	state.sessions[0].mode = 'retry';
+
+	const result = validateStateV1(state);
+
+	assert.equal(result.valid, true);
+});

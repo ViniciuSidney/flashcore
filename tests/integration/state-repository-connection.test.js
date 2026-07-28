@@ -43,175 +43,198 @@ async function importStateWithStorage(storage) {
 	moduleUrl.searchParams.set('integration', String(++importSequence));
 
 	try {
-		return await import(moduleUrl.href);
+		const stateModule = await import(moduleUrl.href);
+		return {stateModule, restoreStorage};
+	} catch (error) {
+		restoreStorage();
+		throw error;
+	}
+}
+
+async function withStateModule(storage, callback) {
+	const {stateModule, restoreStorage} = await importStateWithStorage(storage);
+	try {
+		return await callback(stateModule);
 	} finally {
 		restoreStorage();
 	}
 }
 
-test('state.js usa StateRepository sem alterar o fluxo funcional', async (t) => {
-	await t.test('carrega a chave principal homologada', async () => {
-		const state = await loadJsonFixture(
-			'states/state-v0.1-normal.json'
-		);
+test('state.js conecta a aplicação ao AppStateStore', async (t) => {
+	await t.test('inicializa a chave principal homologada antes do primeiro acesso', async () => {
+		const state = await loadJsonFixture('states/state-v0.1-normal.json');
 		const storage = new FakeStorage({
-			entries: {
-				[PRIMARY_KEY]: JSON.stringify(state)
-			}
+			entries: {[PRIMARY_KEY]: JSON.stringify(state)}
 		});
-		const stateModule = await importStateWithStorage(storage);
 
-		assert.equal(stateModule.getState().decks.length, 2);
-		assert.equal(stateModule.getState().cards.length, 3);
-		assert.equal(
-			stateModule.getState().decks[0].id,
-			'deck-matematica'
-		);
+		await withStateModule(storage, async (stateModule) => {
+			assert.throws(() => stateModule.getState(), /ainda não foi inicializado/);
+
+			const initialization = await stateModule.initializeState();
+
+			assert.equal(initialization.ok, true);
+			assert.equal(initialization.data.source, 'primary');
+			assert.equal(stateModule.getState().decks.length, 2);
+			assert.equal(stateModule.getStateStatus().phase, 'ready');
+		});
 	});
 
 	await t.test('migra a fonte legada e preserva sua chave', async () => {
-		const legacy = await loadJsonFixture(
-			'states/state-legacy-v1.1.json'
-		);
+		const legacy = await loadJsonFixture('states/state-legacy-v1.1.json');
 		const serializedLegacy = JSON.stringify(legacy);
 		const storage = new FakeStorage({
-			entries: {
-				[LEGACY_KEY]: serializedLegacy
-			}
+			entries: {[LEGACY_KEY]: serializedLegacy}
 		});
-		const stateModule = await importStateWithStorage(storage);
-		const persisted = JSON.parse(storage.getItem(PRIMARY_KEY));
 
-		assert.equal(
-			stateModule.getState().decks[0].id,
-			'legacy-deck-001'
-		);
-		assert.equal(persisted.schemaVersion, 1);
-		assert.deepEqual(persisted.sessions, []);
-		assert.equal(storage.getItem(LEGACY_KEY), serializedLegacy);
+		await withStateModule(storage, async (stateModule) => {
+			const initialization = await stateModule.initializeState();
+			const persisted = JSON.parse(storage.getItem(PRIMARY_KEY));
+
+			assert.equal(initialization.ok, true);
+			assert.equal(stateModule.getState().decks[0].id, 'legacy-deck-001');
+			assert.equal(persisted.schemaVersion, 1);
+			assert.deepEqual(persisted.sessions, []);
+			assert.equal(storage.getItem(LEGACY_KEY), serializedLegacy);
+		});
 	});
 
-	await t.test('mutateState persiste e notifica os listeners', async () => {
-		const emptyState = await loadJsonFixture(
-			'states/state-v0.1-empty.json'
-		);
+	await t.test('mutateState persiste antes de publicar o novo snapshot', async () => {
+		const emptyState = await loadJsonFixture('states/state-v0.1-empty.json');
 		const storage = new FakeStorage({
-			entries: {
-				[PRIMARY_KEY]: JSON.stringify(emptyState)
-			}
+			entries: {[PRIMARY_KEY]: JSON.stringify(emptyState)}
 		});
-		const stateModule = await importStateWithStorage(storage);
-		const notifications = [];
-		const unsubscribe = stateModule.subscribeState(
-			(snapshot, reason) => notifications.push({snapshot, reason})
-		);
 
-		const result = stateModule.mutateState((draft) => {
-			draft.decks.push({
-				id: 'deck-b5',
-				name: 'Integração B5',
-				description: '',
-				color: '#2563eb',
-				icon: '📘',
-				createdAt: 1700000000000,
-				updatedAt: 1700000000000,
-				lastOpenedAt: 0
-			});
-		}, 'integration-test');
-		unsubscribe();
+		await withStateModule(storage, async (stateModule) => {
+			await stateModule.initializeState();
+			const notifications = [];
+			const unsubscribe = stateModule.subscribeState(
+				(snapshot, reason) => notifications.push({snapshot, reason})
+			);
 
-		const persisted = JSON.parse(storage.getItem(PRIMARY_KEY));
+			const result = await stateModule.mutateState((draft) => {
+				draft.decks.push({
+					id: 'deck-c3',
+					name: 'Integração C3',
+					description: '',
+					color: '#2563eb',
+					icon: '📘',
+					createdAt: 1700000000000,
+					updatedAt: 1700000000000,
+					lastOpenedAt: 0
+				});
+			}, 'integration-test');
+			unsubscribe();
 
-		assert.equal(result.decks.length, 1);
-		assert.deepEqual(persisted, result);
-		assert.equal(notifications.length, 1);
-		assert.equal(notifications[0].reason, 'integration-test');
-		assert.equal(notifications[0].snapshot, result);
+			const persisted = JSON.parse(storage.getItem(PRIMARY_KEY));
+
+			assert.equal(result.ok, true);
+			assert.equal(result.data.snapshot.decks.length, 1);
+			assert.deepEqual(persisted, result.data.snapshot);
+			assert.equal(stateModule.getState().decks.length, 1);
+			assert.equal(notifications.length, 1);
+			assert.equal(notifications[0].reason, 'integration-test');
+		});
+	});
+
+	await t.test('getState entrega snapshots protegidos contra mutação externa', async () => {
+		const state = await loadJsonFixture('states/state-v0.1-normal.json');
+		const storage = new FakeStorage({
+			entries: {[PRIMARY_KEY]: JSON.stringify(state)}
+		});
+
+		await withStateModule(storage, async (stateModule) => {
+			await stateModule.initializeState();
+			const snapshot = stateModule.getState();
+
+			assert.equal(Object.isFrozen(snapshot), true);
+			assert.equal(Object.isFrozen(snapshot.decks[0]), true);
+			assert.throws(() => {
+				snapshot.decks[0].name = 'Alteração externa';
+			}, TypeError);
+			assert.equal(stateModule.getState().decks[0].name, 'Matemática');
+		});
 	});
 
 	await t.test('replaceState mantém a substituição completa homologada', async () => {
-		const emptyState = await loadJsonFixture(
-			'states/state-v0.1-empty.json'
-		);
-		const normalState = await loadJsonFixture(
-			'states/state-v0.1-normal.json'
-		);
+		const emptyState = await loadJsonFixture('states/state-v0.1-empty.json');
+		const normalState = await loadJsonFixture('states/state-v0.1-normal.json');
 		const storage = new FakeStorage({
-			entries: {
-				[PRIMARY_KEY]: JSON.stringify(emptyState)
-			}
+			entries: {[PRIMARY_KEY]: JSON.stringify(emptyState)}
 		});
-		const stateModule = await importStateWithStorage(storage);
-		const result = stateModule.replaceState(
-			normalState,
-			'integration-replace'
-		);
-		const persisted = JSON.parse(storage.getItem(PRIMARY_KEY));
 
-		assert.equal(result.decks.length, 2);
-		assert.equal(result.cards.length, 3);
-		assert.deepEqual(persisted, result);
+		await withStateModule(storage, async (stateModule) => {
+			await stateModule.initializeState();
+			const result = await stateModule.replaceState(
+				normalState,
+				'integration-replace'
+			);
+			const persisted = JSON.parse(storage.getItem(PRIMARY_KEY));
+
+			assert.equal(result.ok, true);
+			assert.equal(result.data.snapshot.decks.length, 2);
+			assert.equal(result.data.snapshot.cards.length, 3);
+			assert.deepEqual(persisted, result.data.snapshot);
+		});
 	});
 
 	await t.test('resetState reinicializa somente a chave principal', async () => {
-		const normalState = await loadJsonFixture(
-			'states/state-v0.1-normal.json'
-		);
-		const legacyState = {
-			decks: [],
-			cards: []
-		};
-		const serializedLegacy = JSON.stringify(legacyState);
+		const normalState = await loadJsonFixture('states/state-v0.1-normal.json');
+		const serializedLegacy = JSON.stringify({decks: [], cards: []});
 		const storage = new FakeStorage({
 			entries: {
 				[PRIMARY_KEY]: JSON.stringify(normalState),
 				[LEGACY_KEY]: serializedLegacy
 			}
 		});
-		const stateModule = await importStateWithStorage(storage);
-		const result = stateModule.resetState();
-		const persisted = JSON.parse(storage.getItem(PRIMARY_KEY));
 
-		assert.deepEqual(result.decks, []);
-		assert.deepEqual(result.cards, []);
-		assert.deepEqual(result.sessions, []);
-		assert.deepEqual(persisted, result);
-		assert.equal(storage.getItem(LEGACY_KEY), serializedLegacy);
-	});
-
-	await t.test('falha de gravação mantém a semântica transitória da B5', async () => {
-		const emptyState = await loadJsonFixture(
-			'states/state-v0.1-empty.json'
-		);
-		const storage = new FakeStorage({
-			entries: {
-				[PRIMARY_KEY]: JSON.stringify(emptyState)
-			},
-			failures: {
-				setItem: new Error('Falha simulada')
-			}
-		});
-		const originalConsoleError = console.error;
-		const errors = [];
-		console.error = (...args) => errors.push(args);
-
-		try {
-			const stateModule = await importStateWithStorage(storage);
-			const result = stateModule.mutateState((draft) => {
-				draft.settings.theme = 'dark';
-			});
+		await withStateModule(storage, async (stateModule) => {
+			await stateModule.initializeState();
+			const result = await stateModule.resetState();
 			const persisted = JSON.parse(storage.getItem(PRIMARY_KEY));
 
-			assert.equal(result.settings.theme, 'dark');
-			assert.equal(stateModule.getState().settings.theme, 'dark');
-			assert.equal(persisted.settings.theme, 'system');
-			assert.equal(errors.length, 1);
-			assert.match(
-				errors[0][0],
-				/Não foi possível salvar os dados locais/
-			);
-		} finally {
-			console.error = originalConsoleError;
-		}
+			assert.equal(result.ok, true);
+			assert.deepEqual(result.data.snapshot.decks, []);
+			assert.deepEqual(result.data.snapshot.cards, []);
+			assert.deepEqual(result.data.snapshot.sessions, []);
+			assert.deepEqual(persisted, result.data.snapshot);
+			assert.equal(storage.getItem(LEGACY_KEY), serializedLegacy);
+		});
+	});
+
+	await t.test('falha de gravação preserva memória, persistência e listeners', async () => {
+		const emptyState = await loadJsonFixture('states/state-v0.1-empty.json');
+		let failWrites = false;
+		const storage = new FakeStorage({
+			entries: {[PRIMARY_KEY]: JSON.stringify(emptyState)},
+			failures: {
+				setItem: () => failWrites ? new Error('Falha simulada') : null
+			}
+		});
+
+		await withStateModule(storage, async (stateModule) => {
+			await stateModule.initializeState();
+			let notifications = 0;
+			stateModule.subscribeState(() => {
+				notifications += 1;
+			});
+			failWrites = true;
+
+			const originalConsoleError = console.error;
+			console.error = () => {};
+			try {
+				const result = await stateModule.mutateState((draft) => {
+					draft.settings.theme = 'dark';
+				});
+				const persisted = JSON.parse(storage.getItem(PRIMARY_KEY));
+
+				assert.equal(result.ok, false);
+				assert.equal(result.error.code, 'STORAGE_WRITE_FAILED');
+				assert.equal(stateModule.getState().settings.theme, 'system');
+				assert.equal(persisted.settings.theme, 'system');
+				assert.equal(notifications, 0);
+			} finally {
+				console.error = originalConsoleError;
+			}
+		});
 	});
 });

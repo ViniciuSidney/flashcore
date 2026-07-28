@@ -26,7 +26,7 @@ export function getDeckStats(deckId) {
 	};
 }
 
-export function createDeck(data) {
+export async function createDeck(data) {
 	const deck = {
 		id: createId(),
 		name: data.name.trim(),
@@ -37,12 +37,17 @@ export function createDeck(data) {
 		updatedAt: Date.now(),
 		lastOpenedAt: 0
 	};
-	mutateState((state) => state.decks.push(deck), 'deck:create');
-	return deck;
+	const result = await mutateState(
+		(state) => {
+			state.decks.push(deck);
+		},
+		'deck:create'
+	);
+	return result.ok ? deck : null;
 }
 
-export function updateDeck(deckId, data) {
-	mutateState((state) => {
+export async function updateDeck(deckId, data) {
+	const result = await mutateState((state) => {
 		const deck = state.decks.find((item) => item.id === deckId);
 		if (!deck) return;
 		deck.name = data.name.trim();
@@ -51,28 +56,31 @@ export function updateDeck(deckId, data) {
 		deck.icon = data.icon || deck.icon;
 		deck.updatedAt = Date.now();
 	}, 'deck:update');
+	return result.ok;
 }
 
-export function deleteDeck(deckId) {
-	mutateState((state) => {
+export async function deleteDeck(deckId) {
+	const result = await mutateState((state) => {
 		state.decks = state.decks.filter((deck) => deck.id !== deckId);
 		state.cards = state.cards.filter((card) => card.deckId !== deckId);
 	}, 'deck:delete');
+	return result.ok;
 }
 
-export function touchDeck(deckId) {
-	mutateState((state) => {
+export async function touchDeck(deckId) {
+	const result = await mutateState((state) => {
 		const deck = state.decks.find((item) => item.id === deckId);
 		if (deck) deck.lastOpenedAt = Date.now();
 	}, 'deck:open');
+	return result.ok;
 }
 
-export function createExampleData() {
+export async function createExampleData() {
 	if (getState().decks.length > 0 || getState().cards.length > 0) return false;
 	const now = Date.now();
 	const mathId = createId();
 	const techId = createId();
-	mutateState((state) => {
+	const result = await mutateState((state) => {
 		state.decks = [
 			{id: mathId, name: 'Matemática', description: 'Conceitos, fórmulas e exercícios importantes.', color: '#2563eb', icon: '🧮', createdAt: now, updatedAt: now, lastOpenedAt: now},
 			{id: techId, name: 'Informática', description: 'Programação, redes e fundamentos da área técnica.', color: '#0284c7', icon: '💻', createdAt: now, updatedAt: now, lastOpenedAt: now - 1000}
@@ -101,5 +109,5 @@ export function createExampleData() {
 			}
 		];
 	}, 'example:create');
-	return true;
+	return result.ok;
 }

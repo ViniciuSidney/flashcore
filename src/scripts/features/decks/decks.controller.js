@@ -42,7 +42,11 @@ export async function promptCreateDeck() {
 		validate: (values) => validateDeckName(values.name, getState().decks)
 	});
 	if (!result.confirmed) return null;
-	const deck = createDeck(result.values);
+	const deck = await createDeck(result.values);
+	if (!deck) {
+		showToast('Não foi possível criar o baralho.', 'warning');
+		return null;
+	}
 	showToast('Baralho criado com sucesso.');
 	return deck;
 }
@@ -60,7 +64,11 @@ export async function promptEditDeck(deckId) {
 		validate: (values) => validateDeckName(values.name, getState().decks, deckId)
 	});
 	if (!result.confirmed) return false;
-	updateDeck(deckId, result.values);
+	const updated = await updateDeck(deckId, result.values);
+	if (!updated) {
+		showToast('Não foi possível atualizar o baralho.', 'warning');
+		return false;
+	}
 	showToast('Baralho atualizado.');
 	return true;
 }
@@ -81,7 +89,11 @@ export async function confirmDeleteDeck(deckId) {
 		variant: 'danger'
 	});
 	if (!result.confirmed) return false;
-	deleteDeck(deckId);
+	const deleted = await deleteDeck(deckId);
+	if (!deleted) {
+		showToast('Não foi possível excluir o baralho.', 'warning');
+		return false;
+	}
 	showToast('Baralho excluído.', 'warning');
 	return true;
 }

@@ -60,9 +60,13 @@ export function buildImportPreview() {
 	return draft.records;
 }
 
-export function finalizeImport() {
+export async function finalizeImport() {
 	const importable = draft.records.filter((record) => record.status === 'valid' || (record.status === 'duplicate' && draft.duplicatePolicy === 'keep'));
-	const imported = addImportedCards(draft.deckId, importable);
+	const imported = await addImportedCards(draft.deckId, importable);
+	if (!imported) {
+		showToast('Não foi possível salvar os flashcards importados.', 'warning');
+		return null;
+	}
 	const invalid = draft.records.filter((record) => record.status === 'invalid').length;
 	const duplicateCount = draft.records.filter((record) => record.status === 'duplicate').length;
 	const skipped = draft.duplicatePolicy === 'skip' ? duplicateCount : 0;

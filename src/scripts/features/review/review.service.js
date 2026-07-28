@@ -67,58 +67,108 @@ export function getCurrentCard() {
 	return getState().cards.find((card) => card.id === cardId) ?? null;
 }
 
-export function gradeCurrentCard(grade) {
+function buildCompletedSession(session, completed, endedAt = Date.now()) {
+	return {
+		...session,
+		endedAt,
+		durationMs: endedAt - session.startedAt,
+		completed,
+		total: session.cardIds.length,
+		answered: session.results.length
+	};
+}
+
+function applyCardGrade(state, cardId, grade, now, nextReviewAt) {
+	const storedCard = state.cards.find((item) => item.id === cardId);
+	if (!storedCard) return;
+	storedCard.reviewCount += 1;
+	storedCard.correctStreak = grade === GRADES.AGAIN ? 0 : storedCard.correctStreak + 1;
+	storedCard.difficulty = grade === GRADES.AGAIN || grade === GRADES.HARD
+		? 'hard'
+		: grade === GRADES.EASY
+			? 'easy'
+			: 'medium';
+	storedCard.lastReviewedAt = now;
+	storedCard.nextReviewAt = nextReviewAt;
+	storedCard.updatedAt = now;
+}
+
+export async function gradeCurrentCard(grade) {
 	const card = getCurrentCard();
-	if (!activeSession || !card || !Object.values(GRADES).includes(grade)) return {finished: false};
+	if (!activeSession || !card || !Object.values(GRADES).includes(grade)) {
+		return {finished: false, persisted: false};
+	}
+
 	const interval = getGradeIntervals(card)[grade];
 	const now = Date.now();
 	const preserveSchedule = sessionPreservesSchedule(activeSession);
 	const nextReviewAt = preserveSchedule ? card.nextReviewAt : now + interval.milliseconds;
+	const nextSession = structuredClone(activeSession);
 
-	if (!preserveSchedule) {
-		mutateState((state) => {
-			const storedCard = state.cards.find((item) => item.id === card.id);
-			if (!storedCard) return;
-			storedCard.reviewCount += 1;
-			storedCard.correctStreak = grade === GRADES.AGAIN ? 0 : storedCard.correctStreak + 1;
-			storedCard.difficulty = grade === GRADES.AGAIN || grade === GRADES.HARD ? 'hard' : grade === GRADES.EASY ? 'easy' : 'medium';
-			storedCard.lastReviewedAt = now;
-			storedCard.nextReviewAt = nextReviewAt;
-			storedCard.updatedAt = now;
-		}, 'review:grade');
-	}
-
-	activeSession.results.push({
+	nextSession.results.push({
 		cardId: card.id,
 		grade,
 		answeredAt: now,
 		nextReviewAt,
 		schedulePreserved: preserveSchedule
 	});
-	activeSession.currentIndex += 1;
+	nextSession.currentIndex += 1;
+
+	const finished = nextSession.currentIndex >= nextSession.cardIds.length;
+	const completedSession = finished
+		? buildCompletedSession(nextSession, true, now)
+		: null;
+
+	if (!preserveSchedule || completedSession) {
+		const mutationResult = await mutateState((state) => {
+			if (!preserveSchedule) {
+				applyCardGrade(state, card.id, grade, now, nextReviewAt);
+			}
+
+			if (completedSession) {
+				state.sessions.push(completedSession);
+				state.sessions = state.sessions.slice(-APP_CONFIG.maxSessionsStored);
+			}
+		}, finished ? 'review:grade-and-finish' : 'review:grade');
+
+		if (!mutationResult.ok) {
+			return {
+				finished: false,
+				persisted: false,
+				error: mutationResult.error
+			};
+		}
+	}
+
 	answerRevealed = false;
 
-	if (activeSession.currentIndex >= activeSession.cardIds.length) {
-		return {finished: true, session: finishSession(true)};
+	if (completedSession) {
+		activeSession = null;
+		return {
+			finished: true,
+			persisted: true,
+			session: completedSession
+		};
 	}
-	return {finished: false, session: activeSession};
+
+	activeSession = nextSession;
+	return {
+		finished: false,
+		persisted: true,
+		session: activeSession
+	};
 }
 
-export function finishSession(completed = true) {
+export async function finishSession(completed = true) {
 	if (!activeSession) return null;
-	const endedAt = Date.now();
-	const session = {
-		...activeSession,
-		endedAt,
-		durationMs: endedAt - activeSession.startedAt,
-		completed,
-		total: activeSession.cardIds.length,
-		answered: activeSession.results.length
-	};
-	mutateState((state) => {
+	const session = buildCompletedSession(activeSession, completed);
+	const result = await mutateState((state) => {
 		state.sessions.push(session);
 		state.sessions = state.sessions.slice(-APP_CONFIG.maxSessionsStored);
 	}, 'review:finish');
+
+	if (!result.ok) return null;
+
 	activeSession = null;
 	answerRevealed = false;
 	return session;
