@@ -1,72 +1,72 @@
-﻿# FlashCore — Checklist-base de Regressão da v0.1.0
+# FlashCore — Checklist-base de Regressão da v0.1.0
 
 Data: 27/07/2026  
 Branch: dev  
 Commit-base: 7c15108  
-Resultado geral: Não executado
+Resultado geral: Aprovado
 
 ## Preparação
 
-- [ ] Utilizar dados descartáveis.
-- [ ] Confirmar ausência de erros no console ao abrir.
-- [ ] Confirmar que a aplicação abre em `#home`.
-- [ ] Confirmar que os dados permanecem após recarregar.
+- [x] Utilizar dados descartáveis.
+- [x] Confirmar ausência de erros no console ao abrir.
+- [x] Confirmar que a aplicação abre em `#home`.
+- [x] Confirmar que os dados permanecem após recarregar.
 
 ## Baralhos e cards
 
-- [ ] Criar, editar, abrir e excluir um baralho.
-- [ ] Criar, editar, mover e excluir um card.
-- [ ] Pesquisar cards por texto.
-- [ ] Filtrar cards por tag ou dificuldade.
-- [ ] Confirmar proteção contra alterações não salvas.
+- [x] Criar, editar, abrir e excluir um baralho.
+- [x] Criar, editar, mover e excluir um card.
+- [x] Pesquisar cards por texto.
+- [x] Filtrar cards por tag ou dificuldade.
+- [x] Confirmar proteção contra alterações não salvas.
 
 ## Importação
 
-- [ ] Importar cards por texto estruturado.
-- [ ] Importar CSV separado por vírgula.
-- [ ] Importar CSV separado por ponto e vírgula.
-- [ ] Ignorar duplicatas quando configurado.
-- [ ] Manter duplicatas quando configurado.
-- [ ] Identificar linhas inválidas sem quebrar a importação.
+- [x] Importar cards por texto estruturado.
+- [x] Importar CSV separado por vírgula.
+- [x] Importar CSV separado por ponto e vírgula.
+- [x] Ignorar duplicatas quando configurado.
+- [x] Manter duplicatas quando configurado.
+- [x] Identificar linhas inválidas sem quebrar a importação.
 
 ## Revisão
 
-- [ ] Iniciar revisão programada.
-- [ ] Avaliar cards com as quatro opções.
-- [ ] Concluir sessão e abrir relatório.
-- [ ] Repetir cards errados ou difíceis.
-- [ ] Executar Estudo livre sem alterar a agenda dos cards.
-- [ ] Confirmar saída protegida durante uma sessão.
+- [x] Iniciar revisão programada.
+- [x] Avaliar cards com as quatro opções.
+- [x] Concluir sessão e abrir relatório.
+- [x] Repetir cards errados ou difíceis.
+- [x] Executar Estudo livre sem alterar a agenda dos cards.
+- [x] Confirmar saída protegida durante uma sessão.
 
 ## Configurações e dados
 
-- [ ] Alternar entre tema do sistema, claro e escuro.
-- [ ] Alterar limite de revisão.
-- [ ] Alternar exibição dos intervalos.
-- [ ] Alterar escala da sessão.
-- [ ] Executar exclusão total com confirmação dupla.
-- [ ] Confirmar que dados antigos não reaparecem após recarregar.
+- [x] Alternar entre tema do sistema, claro e escuro.
+- [x] Alterar limite de revisão.
+- [x] Alternar exibição dos intervalos.
+- [x] Alterar escala da sessão.
+- [x] Executar exclusão total com confirmação dupla.
+- [x] Confirmar que dados antigos não reaparecem após recarregar.
 
 ## Responsividade
 
-- [ ] Testar em 360 × 800.
-- [ ] Testar em 768 × 1024.
-- [ ] Testar em 1366 × 768.
-- [ ] Confirmar ausência de rolagem horizontal global.
-- [ ] Confirmar modais e botões sem cortes.
-- [ ] Confirmar funcionamento por teclado nos fluxos principais.
+- [x] Testar em 360 × 800.
+- [x] Testar em 768 × 1024.
+- [x] Testar em 1366 × 768.
+- [x] Confirmar ausência de rolagem horizontal global.
+- [x] Confirmar modais e botões sem cortes.
+- [x] Confirmar funcionamento por teclado nos fluxos principais.
 
 ## Encerramento
 
-- [ ] Executar `npm test`.
-- [ ] Confirmar árvore Git sem alterações inesperadas.
-- [ ] Registrar falhas encontradas.
-- [ ] Retestar todas as correções.
+- [x] Executar `npm test`.
+- [x] Confirmar árvore Git sem alterações inesperadas.
+- [x] Registrar falhas encontradas.
+- [x] Retestar todas as correções.
 
 ## Resultado
 
-- Testes aprovados:
-- Testes reprovados:
-- Testes bloqueados:
-- Observações:
-- Decisão: Não executado
+- Testes automatizados aprovados: 12/12
+- Testes reprovados: 0
+- Testes bloqueados: 0
+- Observações: smoke test funcional, persistência e responsividade aprovados; baseline da v0.1.0 preservado.
+- Decisão: Gate A aprovado
